@@ -1,0 +1,18 @@
+<!DOCTYPE HTML5>
+<html>
+	<head>
+		<title>fuhad polls</title>
+	</head>
+	<body>
+		{% if latestQuestion %}
+			<ul>
+				{% for question in latestQuestion %}
+				<li><a href="{% url 'poll:detail'  question.id %}">{{ question.question_text }}</a></li>
+				{% endfor %}
+			</ul>
+		{% else %}
+			<p> No polls available </p>
+		{% endif %}
+
+	</body>
+</html>

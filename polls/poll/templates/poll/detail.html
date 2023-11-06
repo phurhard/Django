@@ -1,0 +1,23 @@
+<!DOCTYPE HTML5>
+<html>
+	<head>
+		<title>fuhad polls</title>
+	</head>
+	<body>
+		{% if question %}
+			<div>
+				<p>id: {{ question.id }}</p>
+				<p>Question: {{ question.question_text }}</p>
+				<p>Published Date: {{ question.pub_date }}</p>
+				<ul>Choices
+					{% for choice in question.choice_set.all %}
+					<li>{{ choice.choice_text }}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% else %}
+			<p> No polls available </p>
+		{% endif %}
+
+	</body>
+</html>
