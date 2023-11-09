@@ -4,20 +4,19 @@
 		<title>fuhad polls</title>
 	</head>
 	<body>
-		{% if question %}
-			<div>
-				<p>id: {{ question.id }}</p>
-				<p>Question: {{ question.question_text }}</p>
-				<p>Published Date: {{ question.pub_date }}</p>
-				<ul>Choices
-					{% for choice in question.choice_set.all %}
-					<li>{{ choice.choice_text }}</li>
-					{% endfor %}
-				</ul>
-			</div>
-		{% else %}
-			<p> No polls available </p>
-		{% endif %}
+		<form action="{% url 'poll:vote' question.id %}" method="post">
+			{% csrf_token %}
+			<fieldset>
+
+				<legend><h1>{{ question.question_text }}</h1></legend>
+				{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+				{% for choice in question.choice_set.all %}
+				<input type='radio' name='choice' id='choice{{ forloop.counter }}' value='{{ choice.id }}'/>
+				<label for='choice{{ forloo.counter }}'>{{ choice.choice_text }}</label><br />
+				{% endfor %}
+			</fieldset>
+		<input type='submit' value='vote'>
+		</form>
 
 	</body>
 </html>
