@@ -2,3 +2,8 @@ li a {
 	color: green;
 	text-decoration: none;
 }
+
+body {
+	background: white url("https://th.bing.com/th/id/OIP.kz4duRxmJR3dqi7jHyzpiAHaE6?pid=ImgDet&rs=1") no-repeat;
+	background-size: contain;
+}
