@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function(){
     // first we get the values of the categories
 
 
-    const  url = `http://127.0.0.1:8000/server/`;
+    const  url = `http://100.20.92.101/server/`;
     const generate = document.getElementById('generate');
     generate.addEventListener('click', function() {
         // Get the category
@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
         })
         .catch(err => {
+            spiner.style.display = 'none';
             console.log(err);
             alert('Error: ' + err.message);
         });
