@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function(){
     // first we get the values of the categories
 
 
-    const  url = `http://100.20.92.101/server/`;
+    const  url = `/server/`;
     const generate = document.getElementById('generate');
     generate.addEventListener('click', function() {
         // Get the category
