@@ -1,7 +1,12 @@
 from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
-# how do i write this views self....
-# lemme give it time motivation will come
-# def login():
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def sample(request):
+    return Response({'message': "Authenticated can now use other services"})
