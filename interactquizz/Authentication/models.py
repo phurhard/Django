@@ -13,15 +13,11 @@ class CustomUser(AbstractUser):
     email = models.EmailField(max_length=50)
     age = models.IntegerField()
     password = models.CharField(max_length=50)
-    level = models.ForeignKey("Level", default="Beginner", null=True, blank=True, on_delete=models.SET_NULL)
+    level = models.ForeignKey("Level", null=True, blank=True, on_delete=models.SET_NULL)
     scores = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.email} {self.username}'
-
-# # Modify the ManyToManyField definitions for groups and user_permissions
-# CustomUser._meta.get_field('groups').related_name = 'user_groups'
-# CustomUser._meta.get_field('user_permissions').related_name = 'user_permissions_set'
 
 
 class Subject(models.Model):
@@ -53,7 +49,7 @@ class Question(models.Model):
     then the main question text"""
     subject_name = models.ForeignKey("Subject", on_delete=models.CASCADE)
     level = models.ForeignKey('Level', null=False, on_delete=models.CASCADE)
-    question_text = models.CharField(max_length=255)
+    question_text = models.TextField()
 
     def __str__(self):
         return f'{self.question_text}'
