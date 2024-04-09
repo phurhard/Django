@@ -1,22 +1,27 @@
 from django.db import models
-
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 
-class User(models.Model):
+class CustomUser(AbstractUser):
     """The user model
     get's the required basic details and makes the username unique.
     """
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50, unique=True)
+    email = models.EmailField(max_length=50)
     age = models.IntegerField()
     password = models.CharField(max_length=50)
-    level = models.ForeignKey("Level", default="Beginner", null=True, blank=True)
+    level = models.ForeignKey("Level", default="Beginner", null=True, blank=True, on_delete=models.SET_NULL)
     scores = models.IntegerField(default=0)
 
     def __str__(self):
-        return f'{self.username} in {self.level} scoring {self.scores}'
+        return f'{self.email} {self.username}'
+
+# # Modify the ManyToManyField definitions for groups and user_permissions
+# CustomUser._meta.get_field('groups').related_name = 'user_groups'
+# CustomUser._meta.get_field('user_permissions').related_name = 'user_permissions_set'
 
 
 class Subject(models.Model):
@@ -46,8 +51,8 @@ class Question(models.Model):
     """The question model
     Linked to the subject and level of the question
     then the main question text"""
-    subject_name = models.ForeignKey("Subject")
-    level = models.ForeignKey('Level', null=False)
+    subject_name = models.ForeignKey("Subject", on_delete=models.CASCADE)
+    level = models.ForeignKey('Level', null=False, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=255)
 
     def __str__(self):
@@ -58,10 +63,10 @@ class Answer(models.Model):
     """The answer model
     Each answer is linked to a question and can either be correct or not
     the answer are then linked to the user that selects them"""
-    question = models.ForeignKey("Question", null=False)
+    question = models.ForeignKey("Question", null=False, on_delete=models.CASCADE)
     options = models.CharField(max_length=250)
     correct = models.BooleanField(default=False)
-    user = models.ForeignKey("User", null=True, default="")
+    user = models.ForeignKey("CustomUser", null=True, default="", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.options
