@@ -6,11 +6,6 @@ from Authentication.serializers import UserSerializer
 # Create your views here.
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = UserSerializer
-
-
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer

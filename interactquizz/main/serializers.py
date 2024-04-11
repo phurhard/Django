@@ -1,4 +1,3 @@
-from dataclasses import field
 from rest_framework import serializers
 from Authentication.models import Question, Answer, Level, Subject, CustomUser
 from Authentication.serializers import UserSerializer

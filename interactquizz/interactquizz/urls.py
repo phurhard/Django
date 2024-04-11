@@ -17,10 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from Authentication import urls
-from main import urls
+from main import urls as mainurls
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('main/', include(urls)),
+    path('main/', include(mainurls)),
     path('auth/', include(urls)),
 ]
