@@ -1,21 +1,19 @@
 from rest_framework import serializers
 from .models import CustomUser
+# from main.serializers import LevelSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    level = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'age', 'username', 'email', 'password']
+        fields = "__all__"
 
     def create(self, validated_data):
-        user = CustomUser.objects.create_user(
-            username=validated_data['username'],
-            password=validated_data['password'],
-            first_name=validated_data.get('first_name'),
-            age=validated_data.get('age'),
-            last_name=validated_data.get('last_name'),
-            email=validated_data.get('email')
-        )
+        user = CustomUser.objects.create(**validated_data)
         return user
+
+    def get_level(self, obj):
+        return obj.level
