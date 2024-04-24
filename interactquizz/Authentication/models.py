@@ -50,6 +50,7 @@ class Question(models.Model):
     subject_name = models.ForeignKey("Subject", on_delete=models.CASCADE)
     level = models.ForeignKey('Level', null=False, on_delete=models.CASCADE)
     question_text = models.TextField()
+    # mark = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.question_text}'

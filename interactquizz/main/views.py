@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
 from .serializers import (
     QuestionSerializer,
@@ -23,8 +24,26 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
+    """The view for the questions
+    will need to edit this to allow for query parameters
+    so users can request for question in a specific leveland a specific subject"""
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        # Get query parameters from the request
+        level = self.request.query_params.get('level', None)
+        subject = self.request.query_params.get('subject', None)
+
+        # Filter queryset based on parameters
+        if level is not None:
+            queryset = queryset.filter(level=level)
+        if subject is not None:
+            queryset = queryset.filter(subject=subject)
+
+        return queryset
 
 
 class AnswerViewSet(viewsets.ModelViewSet):
