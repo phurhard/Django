@@ -2,7 +2,23 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from .models import CustomUser
 from django.core.validators import MinValueValidator, MaxValueValidator
+from rest_framework_simplejwt.tokens import RefreshToken
 # from main.serializers import LevelSerializer
+
+
+class TokenRefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        refresh_token = attrs.get('refresh')
+        try:
+            token = RefreshToken(refresh_token)
+            token.verify()
+        except Exception as e:
+            # print(e) log this
+            raise serializers.ValidationError('Invalid refresh token')
+
+        return attrs
 
 
 class UserSerializer(serializers.ModelSerializer):

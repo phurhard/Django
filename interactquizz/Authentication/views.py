@@ -1,10 +1,11 @@
-from rest_framework import status, viewsets
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework_simplejwt.views import TokenViewBase
+from rest_framework.permissions import AllowAny
 from .models import CustomUser as User
-from .serializers import UserLoginSerializer, UserSerializer
+from .serializers import UserLoginSerializer, UserSerializer, TokenRefreshSerializer
 
 # Create your views here.
 
@@ -55,3 +56,14 @@ class UserLogin(APIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         })
+
+
+class RefreshTokenView(TokenViewBase):
+    serializer_class = TokenRefreshSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = TokenRefreshSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        refresh_token = serializer.validated_data.get('refresh')
+        access_token = RefreshToken(refresh_token).access_token
+        return Response({'access': str(access_token)})
