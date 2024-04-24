@@ -1,8 +1,13 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import QuestionSerializer, AnswerSerializer, SubjectSerializer, LevelSerializer
-from Authentication.models import Question, Answer, Subject, Level, CustomUser
-from Authentication.serializers import UserSerializer
+from .serializers import (
+    QuestionSerializer,
+    AnswerSerializer,
+    SubjectSerializer,
+    LevelSerializer
+    )
+from Authentication.models import Question, Answer, Subject, Level
+
 # Create your views here.
 
 
