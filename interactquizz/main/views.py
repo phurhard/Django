@@ -39,9 +39,9 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
         # Filter queryset based on parameters
         if level is not None:
-            queryset = queryset.filter(level=level)
+            queryset = queryset.filter(level__name=level)
         if subject is not None:
-            queryset = queryset.filter(subject=subject)
+            queryset = queryset.filter(subject_name__name=subject)
 
         return queryset
 
