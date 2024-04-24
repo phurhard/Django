@@ -4,11 +4,22 @@ from .serializers import (
     QuestionSerializer,
     AnswerSerializer,
     SubjectSerializer,
-    LevelSerializer
+    LevelSerializer,
+    UserSerializer
     )
-from Authentication.models import Question, Answer, Subject, Level
+from Authentication.models import Question, Answer, Subject, Level, CustomUser
 
 # Create your views here.
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return None
+        return UserSerializer
 
 
 class QuestionViewSet(viewsets.ModelViewSet):

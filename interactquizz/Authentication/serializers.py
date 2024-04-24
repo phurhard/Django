@@ -3,7 +3,6 @@ from rest_framework import serializers
 from .models import CustomUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from rest_framework_simplejwt.tokens import RefreshToken
-# from main.serializers import LevelSerializer
 
 
 class TokenRefreshSerializer(serializers.Serializer):
