@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from drf_spectacular.utils import extend_schema
+from rest_framework.response import Response
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from .serializers import (
     QuestionSerializer,
@@ -30,6 +33,13 @@ class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('level', in_=openapi.IN_QUERY, type=openapi.TYPE_INTEGER),
+        openapi.Parameter('subject', in_=openapi.IN_QUERY, type=openapi.TYPE_STRING),
+    ])
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
     def get_queryset(self):
         queryset = super().get_queryset()
 
@@ -59,3 +69,10 @@ class SubjectViewSet(viewsets.ModelViewSet):
 class LevelViewSet(viewsets.ModelViewSet):
     queryset = Level.objects.all()
     serializer_class = LevelSerializer
+
+
+def usersubmission(request):
+    data = request(data=request.POST)
+    return Response({
+        'message': 'answers seen'
+    })
