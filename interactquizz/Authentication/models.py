@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(max_length=50)
-    age = models.IntegerField()
+    age = models.IntegerField(null=True, blank=True)
     password = models.CharField(max_length=50)
     level = models.ForeignKey("Level", null=True, blank=True, on_delete=models.SET_NULL)
     scores = models.IntegerField(default=0)

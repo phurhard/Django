@@ -40,22 +40,25 @@ class UserLogin(APIView):
                 'success': False,
                 'error': 'No user found with that username'
                 },
-                status=status.HTTP_401_UNAUTHORIZED
+                status=status.HTTP_404_NOT_FOUND
                 )
         if not user.check_password(password):
             return Response({
                 'success': False,
                 'error': 'Invalid password'
                 },
-                status=status.HTTP_401_UNAUTHORIZED
+                status=status.HTTP_400_BAD_REQUEST
                 )
         refresh = RefreshToken.for_user(user)
+        serializer = UserSerializer(user)
+
         return Response({
             'success': True,
             'message': 'Logged in Successfully',
+            'user': serializer.data,
             'refresh': str(refresh),
             'access': str(refresh.access_token),
-        })
+        }, status=status.HTTP_200_OK)
 
 
 class RefreshTokenView(TokenViewBase):

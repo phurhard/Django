@@ -69,10 +69,3 @@ class SubjectViewSet(viewsets.ModelViewSet):
 class LevelViewSet(viewsets.ModelViewSet):
     queryset = Level.objects.all()
     serializer_class = LevelSerializer
-
-
-def usersubmission(request):
-    data = request(data=request.POST)
-    return Response({
-        'message': 'answers seen'
-    })

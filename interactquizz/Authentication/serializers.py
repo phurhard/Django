@@ -22,24 +22,26 @@ class TokenRefreshSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    level = serializers.SerializerMethodField()
-    age = serializers.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)])
+    # level = serializers.SerializerMethodField()
+    # age = serializers.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)])
 
     class Meta:
         model = CustomUser
-        fields = ["username", "password", "first_name", "last_name", "age", "level"]
+        fields = ["username", "password"]
+        # , "first_name", "last_name", "age", "level"]
 
     def create(self, validated_data):
         password = validated_data.pop('password')
-        print(password)
-        user = CustomUser.objects.create(**validated_data)
+        # print(password)
+        user = CustomUser.objects.create(**validated_data, age=10)
         user.set_password(password)
+        # user.age = 10
         user.save()
         return user
 
-    @extend_schema_field(serializers.IntegerField())
-    def get_level(self, obj):
-        return obj.level
+    # @extend_schema_field(serializers.IntegerField())
+    # def get_level(self, obj):
+        # return obj.level
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
