@@ -39,34 +39,43 @@ class UserLogin(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
+        serializer = UserLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
 
-        user = User.objects.filter(username=username).first()
-        if user is None:
-            return Response({
-                'success': False,
-                'error': 'No user found with that username'
-                },
-                status=status.HTTP_404_NOT_FOUND
-                )
-        if not user.check_password(password):
-            return Response({
-                'success': False,
-                'error': 'Invalid password'
-                },
-                status=status.HTTP_400_BAD_REQUEST
-                )
-        refresh = RefreshToken.for_user(user)
-        serializer = UserSerializer(user)
+            email = validated_data.get('email')
+            password = validated_data.get('password')
 
+            user = User.objects.filter(email=email).first()
+            if user is None:
+                return Response({
+                    'success': False,
+                    'message': 'No user found with that username'
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                    )
+            if not user.check_password(password):
+                return Response({
+                    'success': False,
+                    'message': 'Invalid password provided'
+                    },
+                    status=status.HTTP_401_UNAUTHORIZED
+                    )
+            refresh = RefreshToken.for_user(user)
+            serializer = UserSerializer(user)
+
+            return Response({
+                'success': True,
+                'message': 'Logged in Successfully',
+                'data': serializer.data,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=status.HTTP_200_OK)
         return Response({
-            'success': True,
-            'message': 'Logged in Successfully',
-            'user': serializer.data,
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }, status=status.HTTP_200_OK)
+            'success': False,
+            'message': 'Logged in unsuccessful',
+            'user': serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RefreshTokenView(TokenViewBase):
