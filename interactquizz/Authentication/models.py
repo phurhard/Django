@@ -108,6 +108,7 @@ class CustomUser(AbstractBaseUser):
     scores: Any = models.IntegerField(default=0)
     is_active: Any = models.BooleanField(default=True)
     is_staff: Any = models.BooleanField(default=False)
+    is_superuser: Any = models.BooleanField(default=False)
     date_joined: Any = models.DateTimeField(auto_now_add=True)
 
     USERNAME_FIELD = 'email'

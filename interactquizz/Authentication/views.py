@@ -34,6 +34,29 @@ class UserSignup(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class AdminSignup(APIView):
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            User.objects.create_superuser(
+                email=validated_data['email'],
+                password=validated_data['password'],
+                first_name=validated_data['first_name'],
+                last_name=validated_data['last_name'],
+                age=validated_data.get('age')
+            )
+            return Response({
+                'success': True,
+                'message': 'Superuser created successfully',
+                'data': serializer.data,
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class UserLogin(APIView):
     serializer_class = UserLoginSerializer
     permission_classes = [AllowAny]
