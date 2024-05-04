@@ -61,6 +61,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5500',  # Add your frontend origin
+    "http://*",
 ]
 
 CORS_ALLOW_METHODS = [
@@ -70,6 +71,7 @@ CORS_ALLOW_METHODS = [
 
 CORS_ALLOW_HEADERS = [
     'Content-Type',
+    'Authorization'
 ]
 
 ROOT_URLCONF = 'interactquizz.urls'

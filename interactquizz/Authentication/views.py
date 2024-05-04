@@ -5,7 +5,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from rest_framework.permissions import AllowAny
 from .models import CustomUser as User
-from .serializers import UserLoginSerializer, UserSerializer, TokenRefreshSerializer
+from .serializers import (
+    UserLoginSerializer, UserSerializer, TokenRefreshSerializer)
 
 # Create your views here.
 
@@ -17,7 +18,14 @@ class UserSignup(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            validated_data = serializer.validated_data
+            User.objects.create_user(
+                email=validated_data['email'],
+                password=validated_data['password'],
+                first_name=validated_data['first_name'],
+                last_name=validated_data['last_name'],
+                age=validated_data.get('age')
+            )
             return Response({
                 'success': True,
                 'message': 'User created successfully',

@@ -27,17 +27,16 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["username", "password"]
-        # , "first_name", "last_name", "age", "level"]
+        fields = ["email", "password", "first_name", "last_name"]
 
-    def create(self, validated_data):
-        password = validated_data.pop('password')
-        # print(password)
-        user = CustomUser.objects.create(**validated_data, age=10)
-        user.set_password(password)
-        # user.age = 10
-        user.save()
-        return user
+    # def create(self, validated_data):
+    #     password = validated_data.pop('password')
+    #     # print(password)
+    #     user = CustomUser.objects.create(**validated_data, age=10)
+    #     user.set_password(password)
+    #     # user.age = 10
+    #     user.save()
+    #     return user
 
     # @extend_schema_field(serializers.IntegerField())
     # def get_level(self, obj):
@@ -46,8 +45,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
-    username = serializers.CharField()
+    email = serializers.EmailField()
 
     class Meta:
         model = CustomUser
-        fields = ["username", "password"]
+        fields = ["email", "password"]
