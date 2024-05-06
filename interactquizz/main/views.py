@@ -5,12 +5,15 @@ from rest_framework.permissions import (
     IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny)
 
 
-from Authentication.models import Answer, Question, Score
+from Authentication.models import Answer, Option, Question, Quiz, QuizSet, Score
 # from .models import CustomUser as User
 from .serializers import (
     AnswerSerializer,
     QuestionSerializer,
+    QuizSerializer,
+    QuizSetSerializer,
     ScoreSerializer,
+    OptionSerializer,
     UserSerializer)
 
 
@@ -261,3 +264,89 @@ class ScoreViewDetail(APIView):
                 'success': False,
                 'data': serializer.errors,
                 }, status=status.HTTP_404_NOT_FOUND)
+
+
+class QuizView(APIView):
+    '''
+    Only an admin account can create a quiz'''
+    serializer_class = QuizSerializer
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        '''
+        This creates a new quiz'''
+        serializer = QuizSerializer(data=request.data)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            quiz = Quiz.objects.create(**validated_data)
+            serializer = QuizSerializer(quiz)
+            return Response({
+                'success': True,
+                'data': serializer.data,
+            }, status=status.HTTP_201_CREATED)
+        return Response({
+            'success': False,
+            'data': serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class QuizSetView(APIView):
+    '''
+    Only an admin account can create a quiz'''
+    serializer_class = QuizSetSerializer
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        '''
+        This creates a new quiz'''
+        serializer = QuizSetSerializer(data=request.data)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            quiz = QuizSet.objects.create(**validated_data)
+            serializer = QuizSetSerializer(quiz)
+            return Response({
+                'success': True,
+                'data': serializer.data,
+            }, status=status.HTTP_201_CREATED)
+        return Response({
+            'success': False,
+            'data': serializer.errors,
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self):
+        '''
+        Returns all the quizsets'''
+        try:
+            quizes = QuizSet.objects.all()
+            serializer = QuizSetSerializer(quizes, many=True)
+            return Response({
+                'succes': True,
+                'data': serializer.data
+            }, status=status.HTTP_200_OK)
+        except Exception:
+            return Response({
+                'success': False,
+                'message': serializer.errors
+            }, status=status.HTTP_409_CONFLICT)
+
+
+class OptionView(APIView):
+    '''
+    this is the view for the options of a question'''
+    serializer_class = OptionSerializer
+    permission_classes = [IsAdminUser, IsAuthenticated]
+
+    def post(self, request):
+        serializer = OptionSerializer(data=request.data)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            option = Option.objects.create(**validated_data)
+            serializer = OptionSerializer(option)
+            return Response({
+                'success': True,
+                'message': 'Option logged successfully'
+            }, status=status.HTTP_201_CREATED)
+        return Response({
+            'success': False,
+            'message': serializer.errors
+        }, status=status.HTTP_400_BAD_REQUEST)

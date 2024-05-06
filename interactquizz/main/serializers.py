@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from Authentication.models import (
-    Option, Question, Answer, Level, Quiz, Score, Subject, CustomUser)
+    Option, Question, Answer, Level, Quiz, QuizSet, Score, Subject, CustomUser)
 from Authentication.serializers import UserSerializer
 
 
@@ -65,4 +65,10 @@ class ScoreSerializer(serializers.ModelSerializer):
 class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
+        fields = "__all__"
+
+
+class QuizSetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuizSet
         fields = "__all__"

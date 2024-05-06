@@ -1,7 +1,6 @@
-from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from .models import CustomUser
-from django.core.validators import MinValueValidator, MaxValueValidator
+# from django.core.validators import MinValueValidator, MaxValueValidator
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
@@ -28,19 +27,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ["email", "password", "first_name", "last_name"]
-
-    # def create(self, validated_data):
-    #     password = validated_data.pop('password')
-    #     # print(password)
-    #     user = CustomUser.objects.create(**validated_data, age=10)
-    #     user.set_password(password)
-    #     # user.age = 10
-    #     user.save()
-    #     return user
-
-    # @extend_schema_field(serializers.IntegerField())
-    # def get_level(self, obj):
-        # return obj.level
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
