@@ -119,6 +119,18 @@ class CustomUser(AbstractBaseUser):
     def __str__(self):
         return self.email
 
+    def has_module_perms(self, app_label):
+        """
+        Does the user have permissions to view the app `app_label`?
+        """
+        return self.is_active and self.is_superuser
+
+    def has_perm(self, perm, obj=None):
+        """
+        Does the user have the given permission?
+        """
+        return self.is_active and self.is_superuser
+
 
 class Subject(models.Model):
     """The different subjects or topics that make up the questions."""
@@ -151,7 +163,9 @@ class Question(models.Model):
         "Quiz", on_delete=models.CASCADE)
     level: Annotated[models.ForeignKey, Any] = models.ForeignKey(
         'Level', null=False, on_delete=models.CASCADE)
-    question_text: Annotated[models.TextField, Any] = models.TextField()
+    question_text: Annotated[models.CharField, Any] = models.CharField(
+        max_length=200)
+    marks = models.IntegerField(default=0)
 
     def __str__(self):
         return self.question_text
