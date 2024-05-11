@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .custom-bg {
+            background-color: #f8f9fa; /* Set your custom background color here */
+        }
+    </style>
+</head>
+
+<body class="custom-bg">
+    <div class="container">
+        <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+            <div class="col-md-6">
+                <div class="text-center">
+                    <h2 class="mb-4">Welcome to Intelligent-Quizz</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dapibus velit eget enim varius, eget tincidunt risus rutrum.</p>
+                    <p>Curabitur nec commodo ligula. Sed in mauris a odio vehicula gravida. Ut id sapien ac sapien tristique fringilla.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h2 class="text-center mb-4">Register</h2>
+                <form id="registerform", method="post">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="firstname">First Name</label>
+                        <input type="text" class="form-control" name="first_name" id="firstname" placeholder="Enter your firstname">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" class="form-control" name="last_name" id="lastname" placeholder="Enter your lastname">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password">
+                    </div>
+
+                    <p class="form-text">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+                    <button type="submit" id="submit" class="btn btn-primary btn-block">Signup</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS (Optional) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Pass the URL of the login view to JavaScript
+        const loginUrl = "{% url 'login' %}";
+    </script>
+    <script src="{% static 'js/register.js' %}"></script>
+</body>
+
+</html>

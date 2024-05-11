@@ -32,7 +32,12 @@ class UserSignup(APIView):
                 'message': 'User created successfully',
                 'data': serializer.data,
             }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            'data': serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        return render(request, 'Authentication/register.html')
 
 
 class AdminSignup(APIView):
@@ -56,6 +61,9 @@ class AdminSignup(APIView):
                 'data': serializer.data,
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        return render(request, 'Authentication/register.html')
 
 
 class UserLogin(APIView):
