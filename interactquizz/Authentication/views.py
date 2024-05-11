@@ -1,4 +1,5 @@
 from rest_framework import status
+from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -99,6 +100,9 @@ class UserLogin(APIView):
             'message': 'Logged in unsuccessful',
             'user': serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request):
+        return render(request, 'Authentication/login.html')
 
 
 class RefreshTokenView(TokenViewBase):
