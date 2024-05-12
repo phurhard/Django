@@ -1,5 +1,6 @@
 from rest_framework import status
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate, login
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -78,7 +79,8 @@ class UserLogin(APIView):
             email = validated_data.get('email')
             password = validated_data.get('password')
 
-            user = User.objects.filter(email=email).first()
+            # user = User.objects.filter(email=email).first()
+            user = authenticate(request, email=email, password=password)
             if user is None:
                 return Response({
                     'success': False,
@@ -93,6 +95,7 @@ class UserLogin(APIView):
                     },
                     status=status.HTTP_401_UNAUTHORIZED
                     )
+            login(request, user)
             refresh = RefreshToken.for_user(user)
             serializer = UserSerializer(user)
             # print(serializer.data)
@@ -136,6 +139,9 @@ class ProfileUser(APIView):
             # first_name = user.first_name
             # lastname = user.last_name
             # full_name = f"{first_name} {last_name}"
+            print(f'authenticated: {user}')
 
-            return render(request, 'Authentication/profile.html', {user})
-        return render(request, 'Authentication/profile.html')
+            return render(request, 'Authentication/profile.html', {'user': user})
+        else:
+            print(f'Unauthenticated: {request.user}')
+            return redirect('/auth/login')

@@ -40,7 +40,6 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'Authentication.apps.AuthenticationConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -50,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'main.apps.MainConfig',
+    'Authentication.apps.AuthenticationConfig',
     'drf_spectacular',
     'drf_spectacular_sidecar',
 ]
