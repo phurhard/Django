@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import CustomUser as User
 from .serializers import (
     UserLoginSerializer, UserSerializer, TokenRefreshSerializer)
@@ -95,7 +95,7 @@ class UserLogin(APIView):
                     )
             refresh = RefreshToken.for_user(user)
             serializer = UserSerializer(user)
-
+            # print(serializer.data)
             return Response({
                 'success': True,
                 'message': 'Logged in Successfully',
@@ -106,7 +106,7 @@ class UserLogin(APIView):
         return Response({
             'success': False,
             'message': 'Logged in unsuccessful',
-            'user': serializer.errors,
+            'errors': serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
@@ -122,3 +122,20 @@ class RefreshTokenView(TokenViewBase):
         refresh_token = serializer.validated_data.get('refresh')
         access_token = RefreshToken(refresh_token).access_token
         return Response({'access': str(access_token)})
+
+
+class ProfileUser(APIView):
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        '''returns the details of the user'''
+        if request.user.is_authenticated:
+            user = request.user
+            # email = user.email
+            # first_name = user.first_name
+            # lastname = user.last_name
+            # full_name = f"{first_name} {last_name}"
+
+            return render(request, 'Authentication/profile.html', {user})
+        return render(request, 'Authentication/profile.html')

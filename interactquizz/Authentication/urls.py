@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from .views import (
-    UserLogin, UserSignup, RefreshTokenView, AdminSignup)
+    ProfileUser, UserLogin, UserSignup, RefreshTokenView, AdminSignup)
 
 
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
     path('signup/', UserSignup.as_view(), name='signup'),
     path('login/', UserLogin.as_view(), name='login'),
     path('refresh/', RefreshTokenView.as_view(), name='refresh'),
+    path('profile/', ProfileUser.as_view(), name='profile'),
 ]

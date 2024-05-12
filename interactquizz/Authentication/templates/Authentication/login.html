@@ -47,6 +47,10 @@
 
     <!-- Include Bootstrap JS (Optional) -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="{% static 'js/login.js' %}"></script>
+    <script>
+        // Pass the URL of the login view to JavaScript
+        const profileUrl = "{% url 'profile' %}";
+    </script>
+    <script src="{% static 'js/signin.js' %}"></script>
 </body>
 </html>

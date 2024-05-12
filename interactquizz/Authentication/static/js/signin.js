@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", function() {
         for (let [key, value] of formdata.entries()) {
             formobject[key] = value;
         }
-        console.log(formobject);
 
         fetch("http://127.0.0.1:8000/auth/login/", {
             method: 'POST',
@@ -21,21 +20,23 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => {
             if (!response.ok) {
-                throw new Error('An error occured in accessing the backend');
+                throw new Error(response.statusText);
 
             }
             return response.json();
         })
         .then(data => {
             if (data.success !== true) {
-                alert("Credentials are not correct")
+                alert(data.message);
             } else {
                 localStorage.setItem('token', data.access);
                 localStorage.setItem('refresh', data.refresh);
-                localStorage.setItem('user', data.user);
+                const user = JSON.stringify(data.data);
+                localStorage.setItem('user', user);
                 setTimeout(() => {
-                    window.location.href = "profile.html";
-                }, 5000
+                    window.location.href = profileUrl;
+                    
+                }, 1000
                 );
                 }
 
