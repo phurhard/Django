@@ -1,6 +1,7 @@
 from rest_framework import status
 from django.shortcuts import redirect, render
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -125,6 +126,19 @@ class RefreshTokenView(TokenViewBase):
         refresh_token = serializer.validated_data.get('refresh')
         access_token = RefreshToken(refresh_token).access_token
         return Response({'access': str(access_token)})
+
+
+@login_required
+def profile_view(request):
+    '''
+    This renders the profile page'''
+    return render(request, 'Authentication/profile.html')
+
+
+def logout_view(request):
+    '''Logs out the user'''
+    logout(request)
+    return redirect('login')
 
 
 class ProfileUser(APIView):

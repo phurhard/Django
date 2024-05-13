@@ -35,7 +35,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 const user = JSON.stringify(data.data);
                 localStorage.setItem('user', user);
                 console.log('bearer = ', data.access);
-                // window.location.href = profileUrl;
 
                 fetch(profileUrl, {
                     method: "GET",
@@ -52,8 +51,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     return response;
                 })
                 .then(data => {
-                    console.log('second hit');
-                    alert(data);
                     window.location.href = '/auth/profile'
                 })
                 .catch(error => {
