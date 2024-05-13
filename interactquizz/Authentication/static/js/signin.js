@@ -35,10 +35,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 const user = JSON.stringify(data.data);
                 localStorage.setItem('user', user);
                 console.log('bearer = ', data.access);
+                // window.location.href = profileUrl;
+
                 fetch(profileUrl, {
                     method: "GET",
                     headers: {
-                        'Authorization': `Bearer ${data.access}`,
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
                         'Content-Type': 'application/json'
                     },
                 })
@@ -50,13 +52,14 @@ document.addEventListener("DOMContentLoaded", function() {
                     return response;
                 })
                 .then(data => {
-                    window.location.href = '/auth/profile';
+                    console.log('second hit');
+                    alert(data);
+                    window.location.href = '/auth/profile'
                 })
                 .catch(error => {
                     console.error('An error occured ', error);
                 });
             }
-
         })
         .catch(error => {
             console.log('Error: ', error);

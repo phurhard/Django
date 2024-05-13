@@ -98,7 +98,6 @@ class UserLogin(APIView):
             login(request, user)
             refresh = RefreshToken.for_user(user)
             serializer = UserSerializer(user)
-            # print(serializer.data)
             return Response({
                 'success': True,
                 'message': 'Logged in Successfully',
@@ -106,11 +105,12 @@ class UserLogin(APIView):
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
             }, status=status.HTTP_200_OK)
-        return Response({
-            'success': False,
-            'message': 'Logged in unsuccessful',
-            'errors': serializer.errors,
-        }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({
+                'success': False,
+                'message': 'Logged in unsuccessful',
+                'errors': serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
         return render(request, 'Authentication/login.html')
@@ -129,7 +129,7 @@ class RefreshTokenView(TokenViewBase):
 
 class ProfileUser(APIView):
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         '''returns the details of the user'''
@@ -139,9 +139,15 @@ class ProfileUser(APIView):
             # first_name = user.first_name
             # lastname = user.last_name
             # full_name = f"{first_name} {last_name}"
-            print(f'authenticated: {user}')
-
+            print(f'Authenticated: {user}')
+            # return Response({
+                # 'message': "congrats"
+            # })
             return render(request, 'Authentication/profile.html', {'user': user})
-        else:
-            print(f'Unauthenticated: {request.user}')
-            return redirect('/auth/login')
+        return render(request, 'Authentication/profile.html')
+
+        # else:
+        #     print(f'Unauthenticated: {request.user}')
+
+        #     # user = request.user
+        #     return redirect('/auth/login')
