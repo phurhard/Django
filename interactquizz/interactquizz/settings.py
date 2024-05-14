@@ -203,7 +203,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-LOGIN_URL = 'auth/login/'
+LOGIN_URL = '/auth/login/'
 
 
 # Static files (CSS, JavaScript, Images)

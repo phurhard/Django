@@ -31,17 +31,21 @@
         <div class="row user-info">
             <div class="col-md-6">
                 {% if user %}
-                <input type="text" id="username" name="username" class="form-control mb-3" placeholder="{{ user.first_name }}" readonly>
-                <p>{{ user.first_name }}</p>
+                <p type="text" class="form-control mb-3" >{{ user.first_name }} {{ user.last_name }}</p>
+                
                 <input type="password" id="password" name="password" class="form-control mb-3" placeholder="******" readonly>
                 {% endif %}
             </div>
             <div class="col-md-6">
                 <p class="heading h5"><strong>Scores</strong></p>
                 <ul class="list">
-                    <li class="list-item">Subject 1 | Score</li>
-                    <li class="list-item">Subject 2 | Score</li>
-                    <li class="list-item">Subject 3 | Score</li>
+                    {% if scores %}
+                        {% for score in scores %}
+                            <li class="list-item">{{ score.quiz }} | {{ score.score }}</li>
+                            {% endfor %}
+                            {% else %}
+                            <li class="list-item"> You currently haven't taken any quiz yet</li>
+                            {% endif %}
                 </ul>
             </div>
         </div>

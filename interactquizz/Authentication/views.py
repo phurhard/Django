@@ -7,9 +7,13 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .models import CustomUser as User
+from .models import CustomUser as User, Score
 from .serializers import (
-    UserLoginSerializer, UserSerializer, TokenRefreshSerializer)
+    UserLoginSerializer,
+    UserSerializer,
+    TokenRefreshSerializer,
+    )
+from main.serializers import ScoreSerializer
 
 # Create your views here.
 
@@ -132,36 +136,28 @@ class RefreshTokenView(TokenViewBase):
 def profile_view(request):
     '''
     This renders the profile page'''
-    return render(request, 'Authentication/profile.html')
+    user = request.user
+    scores = Score.objects.filter(user=user.id)
+    serializer = ScoreSerializer(scores, many=True)
+    return render(request, 'Authentication/profile.html',
+                  {'scores': serializer.data})
+
+
+@login_required
+def home_view(request):
+    '''
+    This renders the profile page'''
+    return render(request, 'Authentication/home.html')
+
+
+@login_required
+def quiz_view(request):
+    '''
+    This renders the profile page'''
+    return render(request, 'Authentication/quiz.html')
 
 
 def logout_view(request):
     '''Logs out the user'''
     logout(request)
     return redirect('login')
-
-
-class ProfileUser(APIView):
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        '''returns the details of the user'''
-        if request.user.is_authenticated:
-            user = request.user
-            # email = user.email
-            # first_name = user.first_name
-            # lastname = user.last_name
-            # full_name = f"{first_name} {last_name}"
-            print(f'Authenticated: {user}')
-            # return Response({
-                # 'message': "congrats"
-            # })
-            return render(request, 'Authentication/profile.html', {'user': user})
-        return render(request, 'Authentication/profile.html')
-
-        # else:
-        #     print(f'Unauthenticated: {request.user}')
-
-        #     # user = request.user
-        #     return redirect('/auth/login')

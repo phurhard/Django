@@ -137,6 +137,22 @@ class Score(models.Model):
     def __str__(self):
         return f"{self.user} - {self.quiz} - {self.score}"
 
+    class Meta:
+        unique_together = [['user', 'quiz']]  # Define unique constraint
+
+    @classmethod
+    def create_or_update_score(cls, user, quiz, score):
+        """Create or update score for a user and quiz."""
+        # Check if a score with the same user and quiz exists
+        existing_score = cls.objects.filter(user=user, quiz=quiz).first()
+        if existing_score:
+            # If a score exists, update the score
+            existing_score.score = score
+            existing_score.save()
+        else:
+            # If no score exists, create a new score
+            cls.objects.create(user=user, quiz=quiz, score=score)
+
 
 class QuizSet(models.Model):
     """Sets of quiz questions."""

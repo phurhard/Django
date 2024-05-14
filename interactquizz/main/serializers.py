@@ -57,10 +57,18 @@ class OptionSerializer(serializers.ModelSerializer):
 
 
 class ScoreSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    quiz = serializers.SerializerMethodField()
+
     class Meta:
         model = Score
         fields = "__all__"
 
+    def get_user(self, obj):
+        return obj.user.email
+
+    def get_quiz(self, obj):
+        return obj.quiz.title
 
 class QuizSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,0 +1,94 @@
+{% extends 'Authentication/base.html' %}
+{% load static %}
+{% block title %}Start Quiz{% endblock %}
+    {% block link %}
+    <style>
+        /* Custom styles */
+        body {
+            margin-top: 50px;
+        }
+
+        .question-container {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .answer-options {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .answer-option {
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .centered-buttons {
+            display: flex;
+            justify-content: center;
+        }
+
+        .category-list {
+            padding-left: 0;
+        }
+
+        .category-list-item {
+            list-style: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .aside-column {
+            padding: 20px;
+            border-right: 1px solid #ccc;
+        }
+    </style>
+    {% endblock %}
+
+{% block content %}
+        <div class="row">
+            <div class="col-md-3 aside-column">
+                <h4>Select Question Category</h4>
+                <ul class="category-list">
+                    <li class="category-list-item">Question Category 1</li>
+                    <li class="category-list-item">Question Category 2</li>
+                    <li class="category-list-item">Question Category 3</li>
+                </ul>
+                <button class="btn btn-primary">Start Quiz</button>
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="question-container">
+                            <div class="ques">This is the question</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="answer-options">
+                            <button class="btn btn-primary answer-option">Option 1</button>
+                            <button class="btn btn-primary answer-option">Option 2</button>
+                            <button class="btn btn-primary answer-option">Option 3</button>
+                            <button class="btn btn-primary answer-option">Option 4</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <div class="btn-group centered-buttons">
+                            <button class="btn btn-primary mr-2">Next</button>
+                            <button class="btn btn-primary mr-2">Previous</button>
+                            <button class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
