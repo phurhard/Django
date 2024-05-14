@@ -7,13 +7,15 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .models import CustomUser as User, Score
+from .models import CustomUser as User, Score, Quiz
 from .serializers import (
     UserLoginSerializer,
     UserSerializer,
-    TokenRefreshSerializer,
+    TokenRefreshSerializer
     )
-from main.serializers import ScoreSerializer
+from main.serializers import (
+    ScoreSerializer,
+    QuizSerializer)
 
 # Create your views here.
 
@@ -154,7 +156,13 @@ def home_view(request):
 def quiz_view(request):
     '''
     This renders the profile page'''
-    return render(request, 'Authentication/quiz.html')
+    # gets all the quiz objs
+    quizzes = Quiz.objects.all()
+    serializer = QuizSerializer(quizzes, many=True)
+    print(quizzes[1].question_set.all())
+    print(quizzes[1].question_set.all()[0].options.all())
+    return render(request, 'Authentication/quiz.html',
+                  {'quizes': serializer.data})
 
 
 def logout_view(request):

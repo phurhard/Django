@@ -40,12 +40,25 @@
         .category-list-item {
             list-style: none;
             cursor: pointer;
+            padding: 10px;
             margin-bottom: 10px;
+            {% comment %} font-weight: 900; {% endcomment %}
         }
 
         .aside-column {
             padding: 20px;
             border-right: 1px solid #ccc;
+        }
+        .category-list-item:hover {
+            background-color: #f0f0f0;
+        }
+        .category-description {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            z-index: 1;
         }
     </style>
     {% endblock %}
@@ -53,11 +66,18 @@
 {% block content %}
         <div class="row">
             <div class="col-md-3 aside-column">
-                <h4>Select Question Category</h4>
+                <h4>Select Quiz Type</h4>
                 <ul class="category-list">
-                    <li class="category-list-item">Question Category 1</li>
-                    <li class="category-list-item">Question Category 2</li>
-                    <li class="category-list-item">Question Category 3</li>
+                    {% if quizes %}
+                        {% for quiz in quizes %}
+                            <li class="category-list-item" data-description="{{ quiz.description }}">
+                                <input type="radio" name="quiz_type" id="{{ quiz.id }}" value="{{ quiz.id }}">
+                                <label for="{{ quiz.id }}">{{ quiz.title }}</label>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="category-list-item">Quiz Categories not yet available</li>
+                    {% endif %}
                 </ul>
                 <button class="btn btn-primary">Start Quiz</button>
             </div>
@@ -91,4 +111,7 @@
             </div>
         </div>
     </div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'js/quiz.js' %}"></script>
 {% endblock %}
