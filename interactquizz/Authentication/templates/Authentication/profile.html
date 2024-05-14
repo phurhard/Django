@@ -38,15 +38,31 @@
             </div>
             <div class="col-md-6">
                 <p class="heading h5"><strong>Scores</strong></p>
-                <ul class="list">
+                <table class="table">
                     {% if scores %}
+
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Quiz</th>
+                            <th scope="col">Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {% for score in scores %}
-                            <li class="list-item">{{ score.quiz }} | {{ score.score }}</li>
-                            {% endfor %}
-                            {% else %}
-                            <li class="list-item"> You currently haven't taken any quiz yet</li>
+
+                        <tr>
+                            <th scope="row">{{ score.id }}</th>
+                            <td>{{ score.quiz }}</td>
+                            <td>{{ score.score }}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                        {% else %}
+                        <li class="list-item"> You currently haven't taken any quiz yet</li>
                             {% endif %}
-                </ul>
+                </table>
             </div>
         </div>
     {% endblock %}
