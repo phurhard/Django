@@ -159,8 +159,8 @@ def quiz_view(request):
     # gets all the quiz objs
     quizzes = Quiz.objects.all()
     serializer = QuizSerializer(quizzes, many=True)
-    print(quizzes[1].question_set.all())
-    print(quizzes[1].question_set.all()[0].options.all())
+    # print(quizzes[1].question_set.all())
+    # print(quizzes[1].question_set.all()[0].options.all())
     return render(request, 'Authentication/quiz.html',
                   {'quizes': serializer.data})
 
