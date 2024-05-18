@@ -154,20 +154,9 @@ class Score(models.Model):
             cls.objects.create(user=user, quiz=quiz, score=score)
 
 
-class QuizSet(models.Model):
-    """Sets of quiz questions."""
-    title: Annotated[models.CharField, Any] = models.CharField(max_length=100)
-    description: Annotated[models.TextField, Any] = models.TextField()
-
-    def __str__(self):
-        return self.title
-
-
 class Quiz(models.Model):
     """Individual quiz."""
     title: Annotated[models.CharField, Any] = models.CharField(max_length=100)
-    quiz_set: Annotated[models.ForeignKey, Any] = models.ForeignKey(
-        "Quizset", null=True, on_delete=models.SET_NULL)
     description: Annotated[models.TextField, Any] = models.TextField()
 
     def __str__(self):

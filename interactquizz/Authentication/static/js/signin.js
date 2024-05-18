@@ -29,13 +29,10 @@ document.addEventListener("DOMContentLoaded", function() {
             if (data.success !== true) {
                 alert(data.message);
             } else {
-                console.log('Here');
                 localStorage.setItem('token', data.access);
                 localStorage.setItem('refresh', data.refresh);
                 const user = JSON.stringify(data.data);
                 localStorage.setItem('user', user);
-                console.log('bearer = ', data.access);
-
                 fetch(profileUrl, {
                     method: "GET",
                     headers: {
@@ -47,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    console.log(response);
                     return response;
                 })
                 .then(data => {

@@ -1,16 +1,16 @@
 from django.urls import path, include
 from rest_framework import routers
-
 from .views import (
     AnswerViewDetail,
     AnswerViewList,
     OptionView,
     QuestionViewList,
     QuestionViewDetail,
-    QuizSetView,
     QuizView,
+    QuizViewDetail,
     ScoreViewDetail,
-    ScoreViewList,)
+    ScoreViewList
+    )
 
 urlpatterns = [
     path('question/', QuestionViewList.as_view(), name='questions-create'),
@@ -22,6 +22,6 @@ urlpatterns = [
     path('score/', ScoreViewList.as_view(), name='score-create'),
     path('answer/<int:id>', AnswerViewDetail.as_view(), name='score-detail'),
     path('quiz/', QuizView.as_view(), name='quiz-create'),
-    path('quizset/', QuizSetView.as_view(), name='quizset'),
+    path('quiz/<int:pk>/', QuizViewDetail.as_view(), name='quiz-detail'),
     path('option/', OptionView.as_view(), name='options'),
 ]

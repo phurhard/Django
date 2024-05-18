@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from Authentication.models import (
-    Option, Question, Answer, Level, Quiz, QuizSet, Score, Subject, CustomUser)
+    Option, Question, Answer, Level, Quiz, Score, Subject, CustomUser)
 from Authentication.serializers import UserSerializer
 
 
@@ -16,10 +16,17 @@ class SubjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class OptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Option
+        fields = "__all__"
+
+
 class QuestionSerializer(serializers.ModelSerializer):
     level = serializers.PrimaryKeyRelatedField(queryset=Level.objects.all())
-    subject_name = serializers.PrimaryKeyRelatedField(
+    subject = serializers.PrimaryKeyRelatedField(
         queryset=Subject.objects.all())
+    options = OptionSerializer(many=True, read_only=True)
 
     class Meta:
         model = Question
@@ -29,7 +36,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['level'] = LevelSerializer(instance.level).data
         representation['subject_name'] = SubjectSerializer(
-            instance.subject_name).data
+            instance.subject).data
         return representation
 
 
@@ -50,12 +57,6 @@ class AnswerSerializer(serializers.ModelSerializer):
         return representation
 
 
-class OptionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Option
-        fields = "__all__"
-
-
 class ScoreSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     quiz = serializers.SerializerMethodField()
@@ -70,13 +71,10 @@ class ScoreSerializer(serializers.ModelSerializer):
     def get_quiz(self, obj):
         return obj.quiz.title
 
+
 class QuizSerializer(serializers.ModelSerializer):
+    question_set = QuestionSerializer(many=True, read_only=True)
+
     class Meta:
         model = Quiz
-        fields = "__all__"
-
-
-class QuizSetSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = QuizSet
         fields = "__all__"

@@ -1,17 +1,22 @@
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import (
     IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny)
 
 
-from Authentication.models import Answer, Option, Question, Quiz, QuizSet, Score
+from Authentication.models import (
+    Answer,
+    Option,
+    Question,
+    Quiz,
+    Score
+)
 # from .models import CustomUser as User
 from .serializers import (
     AnswerSerializer,
     QuestionSerializer,
     QuizSerializer,
-    QuizSetSerializer,
     ScoreSerializer,
     OptionSerializer,
     UserSerializer)
@@ -289,21 +294,14 @@ class QuizView(APIView):
             'data': serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
 
-
-class QuizSetView(APIView):
-    '''
-    Only an admin account can create a quiz'''
-    serializer_class = QuizSetSerializer
-    permission_classes = [IsAdminUser]
-
-    def post(self, request):
+    def get(self, request):
         '''
-        This creates a new quiz'''
-        serializer = QuizSetSerializer(data=request.data)
+        This returns all quizes'''
+        serializer = QuizSerializer(data=request.data)
         if serializer.is_valid():
             validated_data = serializer.validated_data
-            quiz = QuizSet.objects.create(**validated_data)
-            serializer = QuizSetSerializer(quiz)
+            quiz = Quiz.objects.create(**validated_data)
+            serializer = QuizSerializer(quiz)
             return Response({
                 'success': True,
                 'data': serializer.data,
@@ -313,21 +311,68 @@ class QuizSetView(APIView):
             'data': serializer.errors,
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self):
-        '''
-        Returns all the quizsets'''
-        try:
-            quizes = QuizSet.objects.all()
-            serializer = QuizSetSerializer(quizes, many=True)
-            return Response({
-                'succes': True,
-                'data': serializer.data
-            }, status=status.HTTP_200_OK)
-        except Exception:
-            return Response({
-                'success': False,
-                'message': serializer.errors
-            }, status=status.HTTP_409_CONFLICT)
+
+# class QuizViewDetail(APIView):
+#     serializer_class = QuizSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request, pk):
+#         '''If a primary is provided, it'll get the specific score object
+#         otherwise'''
+#         if pk:
+#             try:
+#                 quiz = Quiz.objects.get(pk=pk)
+#                 serializer = QuizSerializer(quiz)
+#                 return Response({
+#                     'success': True,
+#                     'data': serializer.data
+#                 }, status=status.HTTP_200_OK)
+#             except Quiz.DoesNotExist:
+#                 return Response({
+#                     'success': False,
+#                     'message': 'Unable to retrieve such question'
+#                 }, status=status.HTTP_404_NOT_FOUND)
+
+#     def put(self, request, pk):
+#         '''
+#         Updates a question object'''
+#         serializer = QuizSerializer(request.data)
+#         try:
+#             score = Quiz.objects.get(pk=pk)
+#             if serializer.is_valid():
+#                 validated_data = serializer.validated_data
+#                 score.objects.update(**validated_data)
+#             return Response({
+#                 'success': True,
+#                 'data': serializer.data
+#                 }, status=status.HTTP_202_ACCEPTED)
+#         except Quiz.DoesNotExist:
+#             return Response({
+#                 'success': False,
+#                 'data': serializer.errors,
+#                 }, status=status.HTTP_404_NOT_FOUND)
+
+#     def delete(self, request, pk):
+#         '''
+#         deletes a specific question object, provided by the question tag'''
+#         serializer = QuizSerializer(request.data)
+#         try:
+#             quiz = Quiz.objects.get(pk=pk)
+#             quiz.delete()
+#             return Response({
+#                 'success': True,
+#                 'data': serializer.data
+#                 }, status=status.HTTP_204_NO_CONTENT)
+#         except Quiz.DoesNotExist:
+#             return Response({
+#                 'success': False,
+#                 'data': serializer.errors,
+#                 }, status=status.HTTP_404_NOT_FOUND)
+
+
+class QuizViewDetail(generics.RetrieveAPIView):
+    queryset = Quiz.objects.all()
+    serializer_class = QuizSerializer
 
 
 class OptionView(APIView):
@@ -350,3 +395,12 @@ class OptionView(APIView):
             'success': False,
             'message': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+# def questions(request, quiz_id):
+#     '''Returns the questions conforming to the quiz
+#     '''
+
+#     quiz = Quiz.objects.get(pk=quiz_id)
+#     questions = quiz.question_set.all()
+#     options
