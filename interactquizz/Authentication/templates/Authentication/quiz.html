@@ -5,47 +5,47 @@
 {% endblock %}
 {% block link %}
   <style>
-        /* Custom styles */
-        body {
-            margin-top: 50px;
-        }
-
-        .question-container {
-            width: 100%;
-            height: auto;
-            border: 1px solid #ccc;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .answer-options {
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .answer-option {
-            margin-bottom: 10px;
-            width: 100%;
-        }
-
-        .centered-buttons {
-            display: flex;
-            justify-content: center;
-        }
-
-        .category-list {
-            padding-left: 0;
-        }
-
-        .category-list-item {
-            list-style: none;
-            cursor: pointer;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-            </style>
+    /* Custom styles */
+    body {
+      margin-top: 50px;
+    }
+    
+    .question-container {
+      width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .answer-options {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .answer-option {
+      margin-bottom: 10px;
+      width: 100%;
+    }
+    
+    .centered-buttons {
+      display: flex;
+      justify-content: center;
+    }
+    
+    .category-list {
+      padding-left: 0;
+    }
+    
+    .category-list-item {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
 {% endblock %}
 
 {% block content %}
@@ -67,35 +67,16 @@
       <button class="btn btn-primary" id="start_quiz">Start Quiz</button>
     </div>
     <div class="col-md-9 text-center" id="content">
-      {% comment %} <div class="questions">
-        <div class="row">
-          <div class="col-12 text-center">
-            <div class="question-container">
-              <div class="ques">This is the question</div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-12 text-center">
-            <div class="answer-options">
-              <button class="btn btn-primary answer-option">Option 1</button>
-              <button class="btn btn-primary answer-option">Option 2</button>
-              <button class="btn btn-primary answer-option">Option 3</button>
-              <button class="btn btn-primary answer-option">Option 4</button>
-            </div>
-          </div>
-        </div>
-      </div> {% endcomment %}
-
+      <div id="quiz-container"></div>
       <div class="questions text-center">
         <p class="text-center">you have not selected any quiz category yet.</p>
       </div>
-      <div class="row d-none">
+      <div class="row">
         <div class="col-12 text-center">
           <div class="btn-group centered-buttons">
-            <button class="btn btn-primary mr-2">Next</button>
-            <button class="btn btn-primary mr-2">Previous</button>
-            <button class="btn btn-primary">Submit</button>
+            <button class="btn controls btn-primary mr-2" onclick="showNextQuestion()">Next</button>
+            <button class="btn controls btn-primary mr-2" onclick="showpreviousQuestion()">Previous</button>
+            <button class="btn controls btn-primary">Submit</button>
           </div>
         </div>
       </div>

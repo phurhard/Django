@@ -1,15 +1,19 @@
+let currentQuestionIndex = 0;
+let questions = [];
+
 document.addEventListener("DOMContentLoaded", function () {
     const categoryItems = document.querySelectorAll('.category-list-item');
+    const buttons = document.querySelectorAll('.controls');
+
     categoryItems.forEach(function (item) {
         // populate it's description to the side menu
         item.addEventListener('click', function () {
-            console.log('here');
             const description = this.getAttribute('data-description');
             const content = document.getElementById('content');
             if (content) {
                 content.textContent = description;
             } else {
-                console.log('Unable to find the element with the id Content');
+                console.error('Unable to find the element with the id Content');
             }
         });
         item.addEventListener('mouseover', function () {
@@ -33,7 +37,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const start_quiz = document.getElementById('start_quiz');
     start_quiz.addEventListener('click', function() {
-        const selected_category = document.querySelector('input:checked');
+            const selected_category = document.querySelector('input:checked');
+            console.log('buttons: ', buttons);
+
         if (selected_category) {
             console.log(selected_category.id);
             // make a fetch to the server for the questions
@@ -52,9 +58,11 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(data => {
                 console.log(data);
+                questions = data.question_set;
+                displayQuestion(currentQuestionIndex);
             })
             .catch(err => {
-                console.error('error occured: ', err);
+                console.error('Error occured: ', err);
             });
 
 
@@ -62,6 +70,43 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("You haven't selected any category");
         }
 
-    })
-
+    });
 });
+    //update the display with questions
+
+
+function displayQuestion(index) {
+    const quizContainer = document.getElementById('quiz-container');
+    quizContainer.innerHTML = ''; // Clear previous question
+
+    if (index >= questions.length) {
+        quizContainer.innerHTML = '<p>Quiz completed!</p>';
+        return;
+    }
+
+    const question = questions[index];
+    const questionElement = document.createElement('div');
+    questionElement.innerHTML = `<h2>${question.text}</h2>`;
+    
+    question.options.forEach(option => {
+        const optionElement = document.createElement('div');
+        optionElement.innerHTML = `
+            <input type="radio" name="option" value="${option.id}">
+            <label>${option.text}</label>
+        `;
+        questionElement.appendChild(optionElement);
+    });
+
+
+    quizContainer.appendChild(questionElement);
+}
+
+function showNextQuestion() {
+    currentQuestionIndex++;
+    displayQuestion(currentQuestionIndex);
+}
+
+function showpreviousQuestion() {
+    currentQuestionIndex--;
+    displayQuestion(currentQuestionIndex);
+}
