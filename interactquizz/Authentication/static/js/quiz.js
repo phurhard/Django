@@ -1,12 +1,16 @@
 let currentQuestionIndex = 0;
 let questions = [];
+let userAnswers = {};
 
 document.addEventListener("DOMContentLoaded", function () {
+    const categoryList = document.getElementById('category-list');
     const categoryItems = document.querySelectorAll('.category-list-item');
     const buttons = document.querySelector('.control');
     const quizContainer = document.getElementById('quiz-container');
     const startQuizButton = document.getElementById('start_quiz');
     const content = document.getElementById('no-quiz-selected-container');
+    const submitQuizButton = document.getElementById('submit-quiz');
+    const radioButtons = categoryList.querySelectorAll('input[type="radio"]');
 
     categoryItems.forEach(function (item) {
         item.addEventListener('click', function () {
@@ -35,10 +39,25 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    function disableRadioButtons(radioButtons) {
+        radioButtons.forEach(radio => {
+            radio.disabled = true;
+        });
+    }  
+
     startQuizButton.addEventListener('click', function () {
         const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
 
         if (selectedCategory) {
+            // radioButtons.forEach(radio => {
+            //     radio.addEventListener('change', function() {
+            //         if (this.checked) {
+            //             disableRadioButtons(radioButtons);
+            //         }
+            //     });
+            // });
+            disableRadioButtons(radioButtons);
+
             fetch(`http://127.0.0.1:8000/main/quiz/${selectedCategory.value}/`, {
                 method: "GET",
                 headers: {
@@ -68,27 +87,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.showNextQuestion = function() {
         if (currentQuestionIndex < questions.length - 1) {
+            saveSelection();
             currentQuestionIndex++;
             displayQuestion(currentQuestionIndex);
         } else {
-            currentQuestionIndex++;
             displayQuestion(currentQuestionIndex);
         }
     }
 
     window.showPreviousQuestion = function() {
         if (currentQuestionIndex > 0) {
+            saveSelection();
             currentQuestionIndex--;
             displayQuestion(currentQuestionIndex);
         }
     }
 
     function displayQuestion(index) {
+        startQuizButton.disabled = true;
         quizContainer.innerHTML = ''; // Clear previous question
 
         if (index >= questions.length) {
-            quizContainer.innerHTML = '<p>Quiz completed!</p>';
-            buttons.classList.add('d-none');
+            quizContainer.innerHTML = '<p class="text">Quiz completed!</p>';
+            // buttons.classList.add('d-none');
             return;
         }
 
@@ -99,12 +120,63 @@ document.addEventListener("DOMContentLoaded", function () {
         question.options.forEach(option => {
             const optionElement = document.createElement('div');
             optionElement.innerHTML = `
-                <input type="radio" name="option" value="${option.id}">
+                <input type="radio" class="list-item-list" name="option" value="${option.id}" id="option${option.id}">
                 <label>${option.text}</label>
             `;
             questionElement.appendChild(optionElement);
         });
 
         quizContainer.appendChild(questionElement);
+
+        const savedSelection = userAnswers[currentQuestionIndex];
+        if (savedSelection !== undefined) {
+            document.getElementById(`option${savedSelection}`).checked = true;
+        }
+        
+    };
+    // submit the quizzes
+    submitQuizButton.addEventListener('click', function () {
+        console.log('user answers: ', userAnswers);
+        saveSelection();
+        collateResults();
+
+    });
+
+    // save the answers of the questions
+    function saveSelection() {
+        const selectedOption = document.querySelector('input[name="option"]:checked');
+        const quest = questions[currentQuestionIndex]
+        questionText = quest.question_text;
+        questionId = quest.id;
+        console.log(questionText);
+        console.log(questionId);
+        if (selectedOption) {
+            userAnswers[currentQuestionIndex] =  selectedOption.value;
+        }
+    }
+
+    // collate the results
+    function collateResults() {
+        fetch('/submit-quiz', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(userAnswers)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error: ', error);
+        });
+
     }
 });
