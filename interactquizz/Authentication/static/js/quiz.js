@@ -3,19 +3,21 @@ let questions = [];
 
 document.addEventListener("DOMContentLoaded", function () {
     const categoryItems = document.querySelectorAll('.category-list-item');
-    const buttons = document.querySelectorAll('.controls');
+    const buttons = document.querySelector('.control');
+    const quizContainer = document.getElementById('quiz-container');
+    const startQuizButton = document.getElementById('start_quiz');
+    const content = document.getElementById('no-quiz-selected-container');
 
     categoryItems.forEach(function (item) {
-        // populate it's description to the side menu
         item.addEventListener('click', function () {
             const description = this.getAttribute('data-description');
-            const content = document.getElementById('content');
             if (content) {
                 content.textContent = description;
             } else {
                 console.error('Unable to find the element with the id Content');
             }
         });
+
         item.addEventListener('mouseover', function () {
             const description = this.getAttribute('data-description');
             const tooltip = document.createElement('div');
@@ -24,26 +26,20 @@ document.addEventListener("DOMContentLoaded", function () {
             tooltip.textContent = description;
             this.appendChild(tooltip);
         });
+
         item.addEventListener('mouseout', function () {
             const tooltip = this.querySelector('.category-description');
             if (tooltip) {
                 tooltip.remove();
             }
         });
-
     });
 
-    // collect the selected category and send to the backend for updating the page
+    startQuizButton.addEventListener('click', function () {
+        const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
 
-    const start_quiz = document.getElementById('start_quiz');
-    start_quiz.addEventListener('click', function() {
-            const selected_category = document.querySelector('input:checked');
-            console.log('buttons: ', buttons);
-
-        if (selected_category) {
-            console.log(selected_category.id);
-            // make a fetch to the server for the questions
-            fetch(`http://127.0.0.1:8000/main/quiz/${selected_category.id}/`, {
+        if (selectedCategory) {
+            fetch(`http://127.0.0.1:8000/main/quiz/${selectedCategory.value}/`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem('token')}`,
@@ -57,56 +53,58 @@ document.addEventListener("DOMContentLoaded", function () {
                 return res.json();
             })
             .then(data => {
-                console.log(data);
                 questions = data.question_set;
                 displayQuestion(currentQuestionIndex);
+                buttons.classList.remove('d-none');
+                content.classList.add('d-none');
             })
             .catch(err => {
-                console.error('Error occured: ', err);
+                console.error('Error occurred: ', err);
             });
-
-
         } else {
             console.error("You haven't selected any category");
         }
-
     });
-});
-    //update the display with questions
 
-
-function displayQuestion(index) {
-    const quizContainer = document.getElementById('quiz-container');
-    quizContainer.innerHTML = ''; // Clear previous question
-
-    if (index >= questions.length) {
-        quizContainer.innerHTML = '<p>Quiz completed!</p>';
-        return;
+    window.showNextQuestion = function() {
+        if (currentQuestionIndex < questions.length - 1) {
+            currentQuestionIndex++;
+            displayQuestion(currentQuestionIndex);
+        } else {
+            currentQuestionIndex++;
+            displayQuestion(currentQuestionIndex);
+        }
     }
 
-    const question = questions[index];
-    const questionElement = document.createElement('div');
-    questionElement.innerHTML = `<h2>${question.text}</h2>`;
-    
-    question.options.forEach(option => {
-        const optionElement = document.createElement('div');
-        optionElement.innerHTML = `
-            <input type="radio" name="option" value="${option.id}">
-            <label>${option.text}</label>
-        `;
-        questionElement.appendChild(optionElement);
-    });
+    window.showPreviousQuestion = function() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            displayQuestion(currentQuestionIndex);
+        }
+    }
 
+    function displayQuestion(index) {
+        quizContainer.innerHTML = ''; // Clear previous question
 
-    quizContainer.appendChild(questionElement);
-}
+        if (index >= questions.length) {
+            quizContainer.innerHTML = '<p>Quiz completed!</p>';
+            buttons.classList.add('d-none');
+            return;
+        }
 
-function showNextQuestion() {
-    currentQuestionIndex++;
-    displayQuestion(currentQuestionIndex);
-}
+        const question = questions[index];
+        const questionElement = document.createElement('div');
+        questionElement.innerHTML = `<h2>${question.question_text}</h2>`;
 
-function showpreviousQuestion() {
-    currentQuestionIndex--;
-    displayQuestion(currentQuestionIndex);
-}
+        question.options.forEach(option => {
+            const optionElement = document.createElement('div');
+            optionElement.innerHTML = `
+                <input type="radio" name="option" value="${option.id}">
+                <label>${option.text}</label>
+            `;
+            questionElement.appendChild(optionElement);
+        });
+
+        quizContainer.appendChild(questionElement);
+    }
+});
