@@ -9,7 +9,8 @@ from .views import (
     QuizView,
     QuizViewDetail,
     ScoreViewDetail,
-    ScoreViewList
+    ScoreViewList,
+    calculate_scores
     )
 
 urlpatterns = [
@@ -19,9 +20,10 @@ urlpatterns = [
          name='questions-detail'),
     path('answer/<int:id>/', AnswerViewDetail.as_view(),
          name='answer-detail'),
-    path('score/', ScoreViewList.as_view(), name='score-create'),
+    # path('score/', ScoreViewList.as_view(), name='score-create'),
     path('answer/<int:id>', AnswerViewDetail.as_view(), name='score-detail'),
     path('quiz/', QuizView.as_view(), name='quiz-create'),
     path('quiz/<int:pk>/', QuizViewDetail.as_view(), name='quiz-detail'),
     path('option/', OptionView.as_view(), name='options'),
+    path('score/', calculate_scores, name='scores'),
 ]

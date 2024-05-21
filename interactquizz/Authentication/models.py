@@ -123,7 +123,7 @@ class Answer(models.Model):
         "Option", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user} - {self.question}"
+        return f"{self.user} - {self.question} : {option.is_correct}"
 
 
 class Score(models.Model):

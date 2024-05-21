@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
             //         }
             //     });
             // });
+            startQuizButton.disabled = true;
             disableRadioButtons(radioButtons);
 
             fetch(`http://127.0.0.1:8000/main/quiz/${selectedCategory.value}/`, {
@@ -91,6 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
             currentQuestionIndex++;
             displayQuestion(currentQuestionIndex);
         } else {
+            saveSelection();
             displayQuestion(currentQuestionIndex);
         }
     }
@@ -104,24 +106,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function displayQuestion(index) {
-        startQuizButton.disabled = true;
         quizContainer.innerHTML = ''; // Clear previous question
 
         if (index >= questions.length) {
-            quizContainer.innerHTML = '<p class="text">Quiz completed!</p>';
+            quizContainer.innerHTML = '<p class="">Quiz completed!</p>';
             // buttons.classList.add('d-none');
             return;
         }
 
         const question = questions[index];
         const questionElement = document.createElement('div');
+        questionElement.classList.add('form-check');
         questionElement.innerHTML = `<h2>${question.question_text}</h2>`;
 
         question.options.forEach(option => {
             const optionElement = document.createElement('div');
             optionElement.innerHTML = `
-                <input type="radio" class="list-item-list" name="option" value="${option.id}" id="option${option.id}">
-                <label>${option.text}</label>
+                <input type="radio" class="form-check-input" name="option" value="${option.id}" id="option${option.id}">
+                <label class="form-check-label" for="options${option.id}">${option.text}</label>
             `;
             questionElement.appendChild(optionElement);
         });
@@ -136,8 +138,8 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     // submit the quizzes
     submitQuizButton.addEventListener('click', function () {
-        console.log('user answers: ', userAnswers);
         saveSelection();
+        console.log('user answers: ', userAnswers);
         collateResults();
 
     });
@@ -145,11 +147,11 @@ document.addEventListener("DOMContentLoaded", function () {
     // save the answers of the questions
     function saveSelection() {
         const selectedOption = document.querySelector('input[name="option"]:checked');
-        const quest = questions[currentQuestionIndex]
-        questionText = quest.question_text;
-        questionId = quest.id;
-        console.log(questionText);
-        console.log(questionId);
+        // const quest = questions[currentQuestionIndex]
+        // questionText = quest.question_text;
+        // questionId = quest.id;
+        // console.log(questionText);
+        // console.log(questionId);
         if (selectedOption) {
             userAnswers[currentQuestionIndex] =  selectedOption.value;
         }
@@ -157,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // collate the results
     function collateResults() {
-        fetch('/submit-quiz', {
+        fetch('http://127.0.0.1:8000/main/score/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

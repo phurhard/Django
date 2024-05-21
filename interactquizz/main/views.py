@@ -1,3 +1,6 @@
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -398,10 +401,29 @@ class OptionView(APIView):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-# def questions(request, quiz_id):
-#     '''Returns the questions conforming to the quiz
-#     '''
+@csrf_exempt
+def calculate_scores(request):
+    '''Returns the questions conforming to the quiz
+    '''
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            print(data)
+            user = request.user
 
-#     quiz = Quiz.objects.get(pk=quiz_id)
-#     questions = quiz.question_set.all()
-#     options
+            print(user.first_name)
+            for v in data.values():
+                option = Option.objects.get(pk=v)
+                question_id = option.question_id
+                question = Question.objects.get(pk=question_id)
+                print(option.question)
+                Answer.objects.create(
+                    user=user,
+                    question=question,
+                    option=option
+                )
+
+            return JsonResponse({'message': 'Quiz submitted successfully!'})
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
