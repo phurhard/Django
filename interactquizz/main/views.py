@@ -417,11 +417,12 @@ def calculate_scores(request):
                 question_id = option.question_id
                 question = Question.objects.get(pk=question_id)
                 print(option.question)
-                Answer.objects.create(
+                answers = Answer.objects.create(
                     user=user,
                     question=question,
                     option=option
                 )
+                print(answers)
 
             return JsonResponse({'message': 'Quiz submitted successfully!'})
         except json.JSONDecodeError:

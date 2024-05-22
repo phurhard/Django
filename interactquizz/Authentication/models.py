@@ -123,7 +123,7 @@ class Answer(models.Model):
         "Option", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.user} - {self.question} : {option.is_correct}"
+        return f"{self.user} - {self.question} : {self.option.is_correct}"
 
 
 class Score(models.Model):
@@ -138,7 +138,7 @@ class Score(models.Model):
         return f"{self.user} - {self.quiz} - {self.score}"
 
     class Meta:
-        unique_together = [['user', 'quiz']]  # Define unique constraint
+        unique_together = [['user', 'quiz']]
 
     @classmethod
     def create_or_update_score(cls, user, quiz, score):
