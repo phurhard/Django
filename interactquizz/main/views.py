@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import (
     IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny)
 
@@ -402,29 +403,59 @@ class OptionView(APIView):
 
 
 @csrf_exempt
-def calculate_scores(request):
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def submit_quiz(request):
     '''Returns the questions conforming to the quiz
     '''
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            print(data)
             user = request.user
-
-            print(user.first_name)
-            for v in data.values():
-                option = Option.objects.get(pk=v)
-                question_id = option.question_id
-                question = Question.objects.get(pk=question_id)
-                print(option.question)
-                answers = Answer.objects.create(
-                    user=user,
-                    question=question,
-                    option=option
-                )
+            for key, value in data.values():
+                option = Option.objects.get(pk=value)
+                question = Question.objects.get(pk=option.question_id)
+                question_answered = Question.objets.get(pk=key)
+                if question == question_answered:
+                    answers = Answer.objects.create(
+                        user=user,
+                        question=question,
+                        option=option
+                    )
                 print(answers)
 
             return JsonResponse({'message': 'Quiz submitted successfully!'})
+        except Question.DoesNotExist:
+            return JsonResponse({'error': 'Question not found'}, status=404)
+        except Option.DoesNotExist:
+            return JsonResponse({'error': 'Option not found'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+        
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+def calculate_scores(user, quiz):
+    answers = Answer.objects.filter(user=user, question__quiz=quiz)
+    correct_answers = answers.filter(option__is_correct=True).count()
+    total_questions = quiz.questions.count()
+    score = (correct_answers / total_questions) * 100
+    return score
+
+# send user's result
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_result(request,quiz_id):
+    try:
+        user = request.user
+        quiz = Quiz.objects.get(id=quiz_id)
+        score = calculate_score(user, quiz)
+        Score.create_or_update_score(user=user, quiz=quiz, score=score)
+        return JsonResponse({'score': score})
+    except Quiz.DoesNotExist:
+        return JsonResponse({'error': 'Quiz not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+    

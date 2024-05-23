@@ -49,6 +49,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
 
         if (selectedCategory) {
+            // radioButtons.forEach(radio => {
+            //     radio.addEventListener('change', function() {
+            //         if (this.checked) {
+            //             disableRadioButtons(radioButtons);
+            //         }
+            //     });
+            // });
             startQuizButton.disabled = true;
             disableRadioButtons(radioButtons);
 
@@ -103,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (index >= questions.length) {
             quizContainer.innerHTML = '<p class="">Quiz completed!</p>';
+            // buttons.classList.add('d-none');
             return;
         }
 
@@ -115,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const optionElement = document.createElement('div');
             optionElement.innerHTML = `
                 <input type="radio" class="form-check-input" name="option" value="${option.id}" id="option${option.id}">
-                <label class="form-check-label" for="option${option.id}">${option.text}</label>
+                <label class="form-check-label" for="options${option.id}">${option.text}</label>
             `;
             questionElement.appendChild(optionElement);
         });
@@ -126,18 +134,21 @@ document.addEventListener("DOMContentLoaded", function () {
         if (savedSelection !== undefined) {
             document.getElementById(`option${savedSelection}`).checked = true;
         }
-    }
-
+        
+    };
+    // submit the quizzes
     submitQuizButton.addEventListener('click', function () {
         saveSelection();
         console.log('user answers: ', userAnswers);
         collateResults();
+
     });
 
+    // save the answers of the questions to userAnswers so the answers can be persisted 
     function saveSelection() {
         const selectedOption = document.querySelector('input[name="option"]:checked');
         if (selectedOption) {
-            userAnswers[currentQuestionIndex] = { selectedOptionId: selectedOption.value };
+            userAnswers[currentQuestionIndex] =  selectedOption.value;
         }
     }
 
@@ -150,6 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return answers;
     }
 
+    // collate the results
     function collateResults() {
         const finalAnswers = collectUserAnswers();
         fetch('http://127.0.0.1:8000/main/score/', {
@@ -167,10 +179,31 @@ document.addEventListener("DOMContentLoaded", function () {
             return response.json();
         })
         .then(data => {
+            console.log('finalAnswers: ', finalAnswers);
             console.log('Success:', data);
+            fetch('http://127.0.0.1:8000/main/results/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' +    response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error: ', error);
+            });
         })
         .catch(error => {
             console.error('Error: ', error);
         });
+
     }
 });

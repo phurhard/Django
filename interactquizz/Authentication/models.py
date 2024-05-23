@@ -161,3 +161,11 @@ class Quiz(models.Model):
 
     def __str__(self):
         return self.title
+#  function collectUserAnswers() {
+#         const answers = {};
+#         Object.keys(userAnswers).forEach(index => {
+#             const question = questions[index];
+#             answers[question.id] = userAnswers[index];
+#         });
+#         return answers;
+#     }
