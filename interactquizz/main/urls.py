@@ -27,5 +27,6 @@ urlpatterns = [
     path('quiz/<int:pk>/', QuizViewDetail.as_view(), name='quiz-detail'),
     path('option/', OptionView.as_view(), name='options'),
     path('score/', submit_quiz, name='scores'),
-    path('results/', user_result, name='results'),
+    path('results/<int:quiz_id>/', user_result, name='results'),
+
 ]

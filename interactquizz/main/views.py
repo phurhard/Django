@@ -412,10 +412,10 @@ def submit_quiz(request):
         try:
             data = json.loads(request.body)
             user = request.user
-            for key, value in data.values():
+            for key, value in data.items():
                 option = Option.objects.get(pk=value)
                 question = Question.objects.get(pk=option.question_id)
-                question_answered = Question.objets.get(pk=key)
+                question_answered = Question.objects.get(pk=key)
                 if question == question_answered:
                     answers = Answer.objects.create(
                         user=user,
@@ -432,30 +432,33 @@ def submit_quiz(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
+            print(e)
             return JsonResponse({'error': str(e)}, status=500)
-        
+
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
 def calculate_scores(user, quiz):
     answers = Answer.objects.filter(user=user, question__quiz=quiz)
     correct_answers = answers.filter(option__is_correct=True).count()
-    total_questions = quiz.questions.count()
+    total_questions = quiz.question_set.count()
+    print(total_questions)
     score = (correct_answers / total_questions) * 100
     return score
+
 
 # send user's result
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def user_result(request,quiz_id):
+def user_result(request, quiz_id):
     try:
         user = request.user
         quiz = Quiz.objects.get(id=quiz_id)
-        score = calculate_score(user, quiz)
+        score = calculate_scores(user, quiz)
         Score.create_or_update_score(user=user, quiz=quiz, score=score)
         return JsonResponse({'score': score})
     except Quiz.DoesNotExist:
         return JsonResponse({'error': 'Quiz not found'}, status=404)
     except Exception as e:
+        print(e)
         return JsonResponse({'error': str(e)}, status=500)
-    

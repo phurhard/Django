@@ -49,13 +49,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
 
         if (selectedCategory) {
-            // radioButtons.forEach(radio => {
-            //     radio.addEventListener('change', function() {
-            //         if (this.checked) {
-            //             disableRadioButtons(radioButtons);
-            //         }
-            //     });
-            // });
             startQuizButton.disabled = true;
             disableRadioButtons(radioButtons);
 
@@ -164,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // collate the results
     function collateResults() {
         const finalAnswers = collectUserAnswers();
+        const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
         fetch('http://127.0.0.1:8000/main/score/', {
             method: 'POST',
             headers: {
@@ -181,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             console.log('finalAnswers: ', finalAnswers);
             console.log('Success:', data);
-            fetch('http://127.0.0.1:8000/main/results/', {
+            fetch(`http://127.0.0.1:8000/main/results/${selectedCategory.value}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
