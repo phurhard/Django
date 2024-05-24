@@ -14,6 +14,7 @@ from Authentication.models import (
     Option,
     Question,
     Quiz,
+    CustomUser,
     Score
 )
 # from .models import CustomUser as User
@@ -457,9 +458,17 @@ def user_result(request, quiz_id):
         quiz = Quiz.objects.get(id=quiz_id)
         score = calculate_scores(user, quiz)
         Score.create_or_update_score(user=user, quiz=quiz, score=score)
+        user.scores += score
         return JsonResponse({'score': score})
     except Quiz.DoesNotExist:
         return JsonResponse({'error': 'Quiz not found'}, status=404)
     except Exception as e:
         print(e)
         return JsonResponse({'error': str(e)}, status=500)
+
+
+def leaderboard(request):
+    users = CustomUser.objects.all().order_by('-scores')
+    return Response({
+        'data': users
+    })

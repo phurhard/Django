@@ -148,8 +148,13 @@ def profile_view(request):
 @login_required
 def home_view(request):
     '''
-    This renders the profile page'''
-    return render(request, 'Authentication/home.html')
+    This renders the home page'''
+    users = User.objects.all().order_by('-scores')[:3]
+    serializer = UserSerializer(users, many=True)
+    
+
+    return render(request, 'Authentication/home.html',
+                  {'users': serializer.data})
 
 
 @login_required
