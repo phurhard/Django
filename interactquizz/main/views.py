@@ -441,6 +441,7 @@ def submit_quiz(request):
 def calculate_scores(user, quiz):
     answers = Answer.objects.filter(user=user, question__quiz=quiz)
     correct_answers = answers.filter(option__is_correct=True).count()
+    print(correct_answers)
     total_questions = quiz.question_set.count()
     print(total_questions)
     score = (correct_answers / total_questions) * 100

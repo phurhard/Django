@@ -22,7 +22,7 @@ urlpatterns = [
     path('answer/<int:id>/', AnswerViewDetail.as_view(),
          name='answer-detail'),
     # path('score/', ScoreViewList.as_view(), name='score-create'),
-    path('answer/<int:id>', AnswerViewDetail.as_view(), name='score-detail'),
+    path('answer/<int:pk>', AnswerViewDetail.as_view(), name='score-detail'),
     path('quiz/', QuizView.as_view(), name='quiz-create'),
     path('quiz/<int:pk>/', QuizViewDetail.as_view(), name='quiz-detail'),
     path('option/', OptionView.as_view(), name='options'),

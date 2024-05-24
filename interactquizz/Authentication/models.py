@@ -125,6 +125,9 @@ class Answer(models.Model):
     def __str__(self):
         return f"{self.user} - {self.question} : {self.option.is_correct}"
 
+    class Meta:
+        unique_together = [['option', 'question']]
+
 
 class Score(models.Model):
     """User scores for quizzes."""

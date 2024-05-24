@@ -16,6 +16,7 @@ class QuestionAdmin(admin.ModelAdmin):
 admin.site.register(Subject)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Level)
+admin.site.register(CustomUser)
 # admin.site.register(Option)
 admin.site.register(Answer)
 admin.site.register(Score)
