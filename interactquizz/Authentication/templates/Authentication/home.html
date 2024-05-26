@@ -37,8 +37,8 @@ Intelligent-Quizz
 {% block content %}
         <!-- User Info Cards -->
         <div class="row">
-            {% if users %}
-            {% for user in users %}
+            {% if top_users %}
+            {% for user in top_users %}
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">{{ user.email }}</div>
@@ -84,11 +84,16 @@ Intelligent-Quizz
         <div class="row mt-4">
             <div class="col">
                 <h3>Leaderboard</h3>
+                {% if leaderboard %}
                 <ul class="list-group">
-                    <li class="list-group-item">User 1</li>
-                    <li class="list-group-item">User 2</li>
-                    <li class="list-group-item">User 3</li>
+                    {% for user in leaderboard %}
+                    <li class="list-group-item"><span>{{ user.email}}</span>  <span>{{ user.scores }}</span>
+                    </li>
+                    {% endfor %}
                 </ul>
+                {% else %}
+                <p>No leaderboard data available.</p>
+                {% endif %}
             </div>
         </div>
     </div>

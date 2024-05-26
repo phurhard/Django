@@ -36,3 +36,13 @@ class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ["email", "password"]
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    # password = serializers.CharField(write_only=True)
+    # level = serializers.SerializerMethodField()
+    # age = serializers.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)])
+
+    class Meta:
+        model = CustomUser
+        exclude = ["is_active", "password", "is_staff", "is_superuser"]

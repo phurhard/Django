@@ -9,6 +9,7 @@ from rest_framework_simplejwt.views import TokenViewBase
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import CustomUser as User, Score, Quiz
 from .serializers import (
+    ProfileSerializer,
     UserLoginSerializer,
     UserSerializer,
     TokenRefreshSerializer
@@ -149,12 +150,13 @@ def profile_view(request):
 def home_view(request):
     '''
     This renders the home page'''
-    users = User.objects.all().order_by('-scores')[:3]
-    serializer = UserSerializer(users, many=True)
-    
-
+    users = User.objects.all()
+    top_users = users.order_by('-scores')[:3]
+    serializer = ProfileSerializer(top_users, many=True)
+    leaderboard = users.order_by('-scores')
+    leaderboard_serializer = ProfileSerializer(leaderboard, many=True)
     return render(request, 'Authentication/home.html',
-                  {'users': serializer.data})
+                  {'top_users': serializer.data, 'leaderboard': leaderboard_serializer.data})
 
 
 @login_required
