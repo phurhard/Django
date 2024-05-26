@@ -39,9 +39,6 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    # password = serializers.CharField(write_only=True)
-    # level = serializers.SerializerMethodField()
-    # age = serializers.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(150)])
 
     class Meta:
         model = CustomUser
