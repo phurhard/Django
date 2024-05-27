@@ -106,11 +106,12 @@ document.addEventListener("DOMContentLoaded", function () {
             // buttons.classList.add('d-none');
             return;
         }
-
+        const container = document.createElement('div');
+        container.classList.add('card')
         const question = questions[index];
         const questionElement = document.createElement('div');
-        questionElement.classList.add('form-check');
-        questionElement.innerHTML = `<h2>${question.question_text}</h2>`;
+        questionElement.classList.add('card-body');
+        questionElement.innerHTML = `<h2>${index + 1} ${question.question_text}</h2>`;
 
         question.options.forEach(option => {
             const optionElement = document.createElement('div');
