@@ -109,19 +109,28 @@ document.addEventListener("DOMContentLoaded", function () {
         const container = document.createElement('div');
         container.classList.add('card')
         const question = questions[index];
+
         const questionElement = document.createElement('div');
         questionElement.classList.add('card-body');
-        questionElement.innerHTML = `<h2>${index + 1} ${question.question_text}</h2>`;
 
+        const questionTitle = document.createElement('div');
+        questionTitle.classList.add('question-title');
+        questionTitle.innerHTML = `<h2>${index + 1}. ${question.question_text}</h2>`;
+        questionElement.appendChild(questionTitle);
+
+        const optionsContainer = document.createElement('div');
+        optionsContainer.classList.add('options-container');
         question.options.forEach(option => {
             const optionElement = document.createElement('div');
+            optionElement.classList.add('option-item');
             optionElement.innerHTML = `
                 <input type="radio" class="form-check-input" name="option" value="${option.id}" id="option${option.id}">
                 <label class="form-check-label" for="options${option.id}">${option.text}</label>
             `;
-            questionElement.appendChild(optionElement);
+            optionsContainer.appendChild(optionElement);
         });
 
+        questionElement.appendChild(optionsContainer);
         quizContainer.appendChild(questionElement);
 
         const savedSelection = userAnswers[currentQuestionIndex];
