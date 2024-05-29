@@ -1,15 +1,42 @@
 {% extends "Authentication/base.html" %}
+{% load custom_filter %}
 {% load static %}
 {% block title %}
 View corrections
+{% endblock %}
+{% block link %}
+    <style>
+        .corrections{
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        .correct {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+        .incorrect {
+            background-color: #BF211E; /* Red */
+            color: white;
+        }
+        .lead {
+            font-weight: bold;
+        }
+        .small {
+            font-size: 0.9em;
+        }
+        .bold {
+            font-weight: bold;
+        }
+    </style>
 {% endblock %}
 {% block content %}
 <div class="row">
     <div class="aside-column">
         <div class="card">
             <div class="card-header">
-                <p class="text">{{ quiz.name }}
-                </p>
+                <p class="text">{{ quiz.title }}</p>
             </div>
             <div class="card-body">
                 <p class="text">{{ score.score }}</p>
@@ -17,17 +44,19 @@ View corrections
         </div>
     </div>
     <div class="col-md-9">
-        <ul class="list">
-            {% for ans in answers %}
-            <li class="list-item">{{ ans.question.question_text }}</li>
-            <p class="text">Your choice</p>
-            <li class="list-item">CHOICE: {{ ans.option.text }}</li>
-            <p class="text">Correct answer</p>
+        
+        {% for ans in answers %}
+
+        <div class="corrections {% if ans.option|is_correct_choice:ans.correct_options %}correct{% else %}incorrect{% endif %}">
+            <p class="lead">{{ ans.question.question_text }}</p>
+            <small class="text small ">Your choice</small>
+            <p class="text bold">{{ ans.option.text }}</p>
+            <small class="text small">Correct answer</small>
             {% for option in ans.correct_options %}
-            <li class="list-item">ANSWER: {{ option.text }}</li>
+            <p class="text bold">{{ option.text }}</p>
             {% endfor %}
-            {% endfor %}
-        </ul>
+        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
