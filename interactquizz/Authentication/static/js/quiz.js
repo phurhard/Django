@@ -100,6 +100,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    window.redirect = function() {
+        const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
+        window.location.href = `/main/corrections/${selectedCategory.value}/`
+    }
+
     function displayQuestion(index) {
         quizContainer.innerHTML = ''; // Clear previous question
 
@@ -142,6 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
     };
     // submit the quizzes
+    // const correctionURL = "{% url 'view-corrections' %}";
     submitQuizButton.addEventListener('click', function () {
         saveSelection();
         console.log('user answers: ', userAnswers);
@@ -150,41 +156,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
-    // ..showModal
-
+   
     function showModal() {
-        const modalHTML = `
-        <div class="modal fade" id="dynamicModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="dynamicModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="dynamicModalLabel">Quiz Results</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        Your quiz has been submitted.
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Understood</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        `
-        // Append modal HTML to the body
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
+        const dynamicModal = new bootstrap.Modal(document.getElementById('dynamicModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        dynamicModal.show();
 
-    // Show the modal using Bootstrap's JavaScript
-    const dynamicModal = new bootstrap.Modal(document.getElementById('dynamicModal'));
-    dynamicModal.show();
-
-    // Optional: Remove the modal from the DOM after it's closed
-    document.getElementById('dynamicModal').addEventListener('hidden.bs.modal', function () {
-        document.getElementById('dynamicModal').remove();
-    });
-
+        document.getElementById('dynamicModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('dynamicModal').remove();
+        });
     }
+
     // save the answers of the questions to userAnswers so the answers can be persisted 
     function saveSelection() {
         const selectedOption = document.querySelector('input[name="option"]:checked');

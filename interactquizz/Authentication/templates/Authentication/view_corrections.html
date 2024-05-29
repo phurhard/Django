@@ -1,0 +1,33 @@
+{% extends "Authentication/base.html" %}
+{% load static %}
+{% block title %}
+View corrections
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="aside-column">
+        <div class="card">
+            <div class="card-header">
+                <p class="text">{{ quiz.name }}
+                </p>
+            </div>
+            <div class="card-body">
+                <p class="text">{{ score.score }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <ul class="list">
+            {% for ans in answers %}
+            <li class="list-item">{{ ans.question.question_text }}</li>
+            <p class="text">Your choice</p>
+            <li class="list-item">CHOICE: {{ ans.option.text }}</li>
+            <p class="text">Correct answer</p>
+            {% for option in ans.correct_options %}
+            <li class="list-item">ANSWER: {{ option.text }}</li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

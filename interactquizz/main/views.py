@@ -1,5 +1,6 @@
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import redirect, render
 from django.http import JsonResponse
 from rest_framework import status, generics
 from rest_framework.response import Response
@@ -472,3 +473,16 @@ def leaderboard(request):
     return Response({
         'data': users
     })
+
+
+def view_corrections(request, quiz_id):
+    user = request.user
+    answers = Answer.objects.filter(user=user, question__quiz=quiz_id)
+    quiz = Quiz.objects.get(pk=quiz_id)
+    score = Score.objects.get(user=user, quiz=quiz)
+    for answer in answers:
+        answer.correct_options = answer.question.options.filter(is_correct=True)
+    return render(request, 'Authentication/view_corrections.html', {
+        'answers': answers,
+        'quiz': quiz,
+        'score': score})

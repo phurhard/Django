@@ -11,7 +11,8 @@ from .views import (
     ScoreViewDetail,
     ScoreViewList,
     submit_quiz,
-    user_result
+    user_result,
+    view_corrections
     )
 
 urlpatterns = [
@@ -28,5 +29,6 @@ urlpatterns = [
     path('option/', OptionView.as_view(), name='options'),
     path('score/', submit_quiz, name='scores'),
     path('results/<int:quiz_id>/', user_result, name='results'),
+    path('corrections/<quiz_id>/', view_corrections, name='view-corrections'),
 
 ]
