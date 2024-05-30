@@ -16,6 +16,7 @@ from Authentication.models import (
     Question,
     Quiz,
     CustomUser,
+    Level,
     Score
 )
 # from .models import CustomUser as User
@@ -486,3 +487,12 @@ def view_corrections(request, quiz_id):
         'answers': answers,
         'quiz': quiz,
         'score': score})
+
+# administration views
+
+
+def create_question(request):
+    levels = Level.objects.all()
+    if request.method == "POST":
+        print(request.data)
+    return render(request, 'main/addQuestion.html', {'levels': levels})
