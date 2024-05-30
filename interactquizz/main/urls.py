@@ -13,7 +13,8 @@ from .views import (
     submit_quiz,
     user_result,
     view_corrections,
-    create_question
+    create_question,
+    addQuiz
     )
 
 urlpatterns = [
@@ -32,5 +33,7 @@ urlpatterns = [
     path('results/<int:quiz_id>/', user_result, name='results'),
     path('corrections/<quiz_id>/', view_corrections, name='view-corrections'),
     path('create-question/', create_question, name='create-question'),
+    path('add-quiz/', addQuiz, name='add-quiz'),
+    
 
 ]

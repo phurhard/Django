@@ -283,7 +283,7 @@ class QuizView(APIView):
     '''
     Only an admin account can create a quiz'''
     serializer_class = QuizSerializer
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
 
     def post(self, request):
         '''
@@ -305,19 +305,14 @@ class QuizView(APIView):
     def get(self, request):
         '''
         This returns all quizes'''
-        serializer = QuizSerializer(data=request.data)
-        if serializer.is_valid():
-            validated_data = serializer.validated_data
-            quiz = Quiz.objects.create(**validated_data)
-            serializer = QuizSerializer(quiz)
-            return Response({
-                'success': True,
-                'data': serializer.data,
-            }, status=status.HTTP_201_CREATED)
+        serializer = QuizSerializer()
+        quizes = Quiz.objects.all()
+        serialized_data = serializer(quizes, many=True)
         return Response({
-            'success': False,
-            'data': serializer.errors,
-        }, status=status.HTTP_400_BAD_REQUEST)
+            'success': True,
+            'data': serialized_data.data,
+        }, status=status.HTTP_201_CREATED)
+        
 
 
 # class QuizViewDetail(APIView):
@@ -493,6 +488,68 @@ def view_corrections(request, quiz_id):
 
 def create_question(request):
     levels = Level.objects.all()
+    quizes = Quiz.objects.all()
     if request.method == "POST":
-        print(request.data)
-    return render(request, 'main/addQuestion.html', {'levels': levels})
+        # print(request.POST)
+        question_text = request.POST.get('question_text')
+        option1 = request.POST.get('option1_text')
+        option2 = request.POST.get('option2_text')
+        option3 = request.POST.get('option3_text')
+        option4 = request.POST.get('option4_text')
+        correct_option = request.POST.get('correct_option')
+        level = request.POST.get('level')
+        quiz = request.POST.get('quiz')
+        question_level = Level.objects.get(pk=level)
+
+        if Question.objects.filter(question_text=question_text, quiz_id=quiz).exists():
+            return JsonResponse({
+                'status': False,
+                'message': 'A question with this text already exists.'
+            }, status=400)
+
+        question = Question.objects.create(
+            question_text=question_text,
+            level=question_level,
+            quiz=Quiz.objects.get(pk=quiz)
+        )
+
+        options = [
+            Option.objects.create(question=question, text=option1,
+                                  is_correct=(correct_option == 'option1')),
+            Option.objects.create(question=question, text=option2,
+                                  is_correct=(correct_option == 'option2')),
+            Option.objects.create(question=question, text=option3,
+                                  is_correct=(correct_option == 'option3')),
+            Option.objects.create(question=question, text=option4,
+                                  is_correct=(correct_option == 'option4'))
+            ]
+        serialized_data = QuestionSerializer(question)
+        print(serialized_data.data)
+        return JsonResponse({
+                'status': True,
+                'data': serialized_data.data,
+                'message': 'Option logged successfully'
+            }, status=201)
+    return render(request, 'main/addQuestion.html', {'levels': levels, 'quizes': quizes})
+
+
+def addQuiz(request):
+    if request.method == "POST":
+        data = {
+            'title': request.POST.get('quiz_title'),
+            'description': request.POST.get('quiz_descr')
+        }
+        serializer = QuizSerializer(data=data)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            quiz = Quiz.objects.create(**validated_data)
+            serializer = QuizSerializer(quiz)
+            return JsonResponse({
+                'success': True,
+                'data': serializer.data,
+            }, status=201)
+        return JsonResponse({
+            'success': False,
+            'data': serializer.errors,
+        }, status=400)
+    return render(request, 'main/addQuiz.html')

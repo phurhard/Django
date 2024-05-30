@@ -1,51 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Question</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <form class="form" method="post">
-            <div class="form-group">
-                <label for="level" class="form-label">Complexity Level</label>
-                <small>select the complexity from the dropdown below</small>
-                <select name="level" id="level" class="form-select">
-                    {% for level in levels %}
-                    <option value="{{ level }}">{{ level }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="question" class="form-label">Question Text</label>
-                <input type="text" class="form-control" name="question_text" id="question">
-            </div>
-            <div class="form-group">
-                <label for="option1" class="form-label">Option 1</label>
-                <input type="text" class="form-control" name="option1_text" id="option1">
-            </div>
-            <div class="form-group">
-                <label for="option2" class="form-label">Option 2</label>
-                <input type="text" class="form-control" name="option2_text" id="option2">
-            </div>
-            <div class="form-group">
-                <label for="option3" class="form-label">Option 3</label>
-                <input type="text" class="form-control" name="option3_text" id="option3">
-            </div>
-            <div class="form-group">
-                <label for="option4" class="form-label">Option 4</label>
-                <input type="text" class="form-control" name="option4_text" id="option4">
-            </div>
-            <div class="form-group">
-                <select name="correct_option"   id="correct_option" class="form-select"   aria-label="Correct option">
-                    <option value=""></option>
-                </select>
-            </div>
-            <button type="submit">Create Question</button>
-        </form>
-
+      <form class="form" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="level" class="form-label">Complexity Level</label>
+          <small>select the complexity from the dropdown below</small>
+          <select name="level" id="level" class="form-select">
+            {% for level in levels %}
+              <option value="{{ level.id }}">{{ level.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+            <label for="quiz" class="form-label">Quiz Type</label>
+            <small>Please select the quiz category this question belongs to</small>
+            <select name="quiz" id="quiz" class="form-select">
+              {% for quiz in quizes %}
+                <option value="{{ quiz.id }}">{{ quiz.title }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        <div class="form-group">
+          <label for="question" class="form-label">Question Text</label>
+          <input type="text" class="form-control" name="question_text" id="question" required/>
+        </div>
+        <div class="form-group">
+          <label for="option1" class="form-label">Option 1</label>
+          <input type="text" class="form-control" name="option1_text" id="option1" required/>
+        </div>
+        <div class="form-group">
+          <label for="option2" class="form-label">Option 2</label>
+          <input type="text" class="form-control" name="option2_text" id="option2" required/>
+        </div>
+        <div class="form-group">
+          <label for="option3" class="form-label">Option 3</label>
+          <input type="text" class="form-control" name="option3_text" id="option3" required/>
+        </div>
+        <div class="form-group">
+          <label for="option4" class="form-label">Option 4</label>
+          <input type="text" class="form-control" name="option4_text" id="option4" required/>
+        </div>
+        <div class="form-group">
+            <label for="correct_option" class="form-label">Correct Option</label>
+          <select name="correct_option" id="correct_option" class="form-select" aria-label="Correct option">
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+            <option value="option3">Option 3</option>
+            <option value="option4">Option 4</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Question</button>
+      </form>
     </div>
-    
-</body>
+  </body>
 </html>

@@ -88,7 +88,7 @@ class Level(models.Model):
 class Question(models.Model):
     """The question model."""
     subject: Annotated[models.ForeignKey, Any] = models.ForeignKey(
-        "Subject", on_delete=models.CASCADE)
+        "Subject", null=True, on_delete=models.CASCADE)
     quiz: Annotated[models.ForeignKey, Any] = models.ForeignKey(
         "Quiz", on_delete=models.CASCADE)
     level: Annotated[models.ForeignKey, Any] = models.ForeignKey(
@@ -99,6 +99,10 @@ class Question(models.Model):
 
     def __str__(self):
         return self.question_text
+
+    class Meta:
+        unique_together = [['question_text', 'quiz']]
+
 
 
 class Option(models.Model):
