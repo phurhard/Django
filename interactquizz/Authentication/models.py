@@ -104,7 +104,6 @@ class Question(models.Model):
         unique_together = [['question_text', 'quiz']]
 
 
-
 class Option(models.Model):
     """The options for a question."""
     question: Annotated[models.ForeignKey, Any] = models.ForeignKey(
@@ -168,11 +167,3 @@ class Quiz(models.Model):
 
     def __str__(self):
         return self.title
-#  function collectUserAnswers() {
-#         const answers = {};
-#         Object.keys(userAnswers).forEach(index => {
-#             const question = questions[index];
-#             answers[question.id] = userAnswers[index];
-#         });
-#         return answers;
-#     }

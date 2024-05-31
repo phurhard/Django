@@ -164,10 +164,15 @@ def quiz_view(request):
     '''
     This renders the quiz page'''
     # gets all the quiz objs
+    user = request.user
+    user_scores = Score.objects.filter(user=user)
+    quizes_taken = Quiz.objects.filter(score__in=user_scores)
+    quizserializer = QuizSerializer(quizes_taken, many=True)
     quizzes = Quiz.objects.all()
     serializer = QuizSerializer(quizzes, many=True)
     return render(request, 'Authentication/quiz.html',
-                  {'quizes': serializer.data})
+                  {'quizes': serializer.data,
+                   'quizes_taken': quizserializer.data})
 
 
 def logout_view(request):
