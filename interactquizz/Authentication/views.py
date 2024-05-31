@@ -162,7 +162,7 @@ def home_view(request):
 @login_required
 def quiz_view(request):
     '''
-    This renders the profile page'''
+    This renders the quiz page'''
     # gets all the quiz objs
     quizzes = Quiz.objects.all()
     serializer = QuizSerializer(quizzes, many=True)

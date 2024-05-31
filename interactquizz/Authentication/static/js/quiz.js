@@ -45,6 +45,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }  
 
+    // shuffle function for the question
+    function shuffleArray(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
     startQuizButton.addEventListener('click', function () {
         const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
         const aside = document.querySelector('.aside-column');
@@ -69,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(data => {
                 questions = data.question_set;
+                questions = shuffleArray(questions);
                 displayQuestion(currentQuestionIndex);
                 buttons.classList.remove('d-none');
                 content.classList.add('d-none');
