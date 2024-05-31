@@ -141,7 +141,7 @@ def profile_view(request):
     '''
     This renders the profile page'''
     user = request.user
-    scores = Score.objects.filter(user=user.id)
+    scores = Score.objects.filter(user=user)
     serializer = ScoreSerializer(scores, many=True)
     return render(request, 'Authentication/profile.html',
                   {'scores': serializer.data})
