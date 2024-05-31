@@ -524,7 +524,7 @@ def create_question(request):
                                   is_correct=(correct_option == 'option4'))
             ]
         serialized_data = QuestionSerializer(question)
-        print(serialized_data.data)
+        # print(serialized_data.data)
         return JsonResponse({
                 'status': True,
                 'data': serialized_data.data,

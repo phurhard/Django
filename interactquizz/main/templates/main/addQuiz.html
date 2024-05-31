@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Quiz</title>
-</head>
-<body>
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}
+Create Quiz
+{% endblock %}
+{% block content %}
     <div class="container">
         <form class="form" method="post">
             {% csrf_token %}
@@ -17,10 +15,9 @@
                 <label for="quizDescr" class="">Quiz Description</label>
                 <textarea name="quiz_descr" class="form-control font-monospace" id="quizDescr" cols="30" rows="10"></textarea>
             </div>
-            <button type="submit">Create Quiz Type</button>
+            <button type="submit" class="btn btn-primary">Create Quiz Type</button>
         </form>
 
     </div>
     
-</body>
-</html>
+{% endblock %}
