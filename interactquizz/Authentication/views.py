@@ -1,4 +1,5 @@
 from rest_framework import status
+from django.db.models import Count
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -168,7 +169,7 @@ def quiz_view(request):
     user_scores = Score.objects.filter(user=user)
     quizes_taken = Quiz.objects.filter(score__in=user_scores)
     quizserializer = QuizSerializer(quizes_taken, many=True)
-    quizzes = Quiz.objects.all()
+    quizzes = Quiz.objects.annotate(num_questions=Count('question')).filter(num_questions__gt=0)
     serializer = QuizSerializer(quizzes, many=True)
     return render(request, 'Authentication/quiz.html',
                   {'quizes': serializer.data,
