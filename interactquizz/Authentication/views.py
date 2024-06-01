@@ -163,8 +163,8 @@ def home_view(request):
 @login_required
 def quiz_view(request):
     '''
-    This renders the quiz page'''
-    # gets all the quiz objs
+    This renders the quiz page
+    gets all the quiz objs'''
     user = request.user
     user_scores = Score.objects.filter(user=user)
     quizes_taken = Quiz.objects.filter(score__in=user_scores)
