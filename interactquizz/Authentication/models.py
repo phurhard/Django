@@ -129,7 +129,7 @@ class Answer(models.Model):
         return f"{self.user} - {self.question} : {self.option.is_correct}"
 
     class Meta:
-        unique_together = [['option', 'question']]
+        unique_together = [['user', 'question']]
 
 
 class Score(models.Model):
