@@ -312,65 +312,6 @@ class QuizView(APIView):
             'success': True,
             'data': serialized_data.data,
         }, status=status.HTTP_201_CREATED)
-        
-
-
-# class QuizViewDetail(APIView):
-#     serializer_class = QuizSerializer
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, pk):
-#         '''If a primary is provided, it'll get the specific score object
-#         otherwise'''
-#         if pk:
-#             try:
-#                 quiz = Quiz.objects.get(pk=pk)
-#                 serializer = QuizSerializer(quiz)
-#                 return Response({
-#                     'success': True,
-#                     'data': serializer.data
-#                 }, status=status.HTTP_200_OK)
-#             except Quiz.DoesNotExist:
-#                 return Response({
-#                     'success': False,
-#                     'message': 'Unable to retrieve such question'
-#                 }, status=status.HTTP_404_NOT_FOUND)
-
-#     def put(self, request, pk):
-#         '''
-#         Updates a question object'''
-#         serializer = QuizSerializer(request.data)
-#         try:
-#             score = Quiz.objects.get(pk=pk)
-#             if serializer.is_valid():
-#                 validated_data = serializer.validated_data
-#                 score.objects.update(**validated_data)
-#             return Response({
-#                 'success': True,
-#                 'data': serializer.data
-#                 }, status=status.HTTP_202_ACCEPTED)
-#         except Quiz.DoesNotExist:
-#             return Response({
-#                 'success': False,
-#                 'data': serializer.errors,
-#                 }, status=status.HTTP_404_NOT_FOUND)
-
-#     def delete(self, request, pk):
-#         '''
-#         deletes a specific question object, provided by the question tag'''
-#         serializer = QuizSerializer(request.data)
-#         try:
-#             quiz = Quiz.objects.get(pk=pk)
-#             quiz.delete()
-#             return Response({
-#                 'success': True,
-#                 'data': serializer.data
-#                 }, status=status.HTTP_204_NO_CONTENT)
-#         except Quiz.DoesNotExist:
-#             return Response({
-#                 'success': False,
-#                 'data': serializer.errors,
-#                 }, status=status.HTTP_404_NOT_FOUND)
 
 
 class QuizViewDetail(generics.RetrieveAPIView):

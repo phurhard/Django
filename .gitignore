@@ -5,6 +5,7 @@ __pycache__/
 *$py.class
 staticfiles
 scraper
+POP
 
 v.py
 Pipfile

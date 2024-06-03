@@ -162,7 +162,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
-   
+    function getCsrfToken() {
+        return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    }
     function showModal() {
         const dynamicModal = new bootstrap.Modal(document.getElementById('dynamicModal'), {
             backdrop: 'static',
@@ -194,12 +196,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // collate the results
     function collateResults() {
-        const finalAnswers = collectUserAnswers();
+        const finalAnswers = collectUserAnswers();const csrftoken = getCsrfToken();
         const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
         fetch('http://127.0.0.1:8000/main/score/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json','X-CSRFToken': csrftoken,
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
             body: JSON.stringify(finalAnswers)
