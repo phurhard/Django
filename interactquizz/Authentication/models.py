@@ -1,7 +1,16 @@
 from typing import Annotated, Any
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+
 # Create your models here.
+
+
+LEVEL_THRESHOLD = {
+    "Beginner": 0,
+    "Intermediate": 50,
+    "Expert": 90,
+    "StarLord": 150
+}
 
 
 class CustomUserManager(BaseUserManager):
@@ -32,8 +41,7 @@ class CustomUser(AbstractBaseUser):
     first_name: Any = models.CharField(max_length=50)
     last_name: Any = models.CharField(max_length=50)
     age: Any = models.IntegerField(null=True, blank=True)
-    level: Any = models.ForeignKey('Level', null=True, blank=True,
-                                   on_delete=models.SET_NULL)
+    level: Any = models.ForeignKey('Level', default="Beginner",                                  on_delete=models.SET_DEFAULT)
     scores: Any = models.IntegerField(default=0)
     is_active: Any = models.BooleanField(default=True)
     is_staff: Any = models.BooleanField(default=False)
@@ -59,6 +67,29 @@ class CustomUser(AbstractBaseUser):
         Does the user have the given permission?
         """
         return self.is_active and self.is_superuser
+
+    def get_progress_percentage(self):
+        total_score = Score.objects.filter(user=self).aggregate(models.Sum('score'))['score__sum'] or 0
+        print(f'total score {total_score}')
+        current_level_threshold = LEVEL_THRESHOLD[self.level.name]
+        print(f'current threshold {current_level_threshold}')
+        next_level_threshold = LEVEL_THRESHOLD.get(self.get_next_level(), current_level_threshold)
+        print(f'next level threshold {next_level_threshold}')
+        if next_level_threshold == current_level_threshold:
+            return 100
+        progress_within_level = total_score - current_level_threshold
+        print(f'progress within level {progress_within_level}')
+        level_range = next_level_threshold - current_level_threshold
+        print(f'Level range {level_range}')
+        print(f'percentage {progress_within_level/level_range}')
+        return (progress_within_level/level_range) * 100
+
+    def get_next_level(self):
+        levels = list(LEVEL_THRESHOLD.keys())
+        current_index = levels.index(self.level.name)
+        if current_index < len(levels) - 1:
+            return levels[current_index + 1]
+        return self.level.name
 
 
 class Subject(models.Model):

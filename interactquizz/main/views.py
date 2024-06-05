@@ -1,11 +1,13 @@
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect, render
+from django.db import models
 from django.http import JsonResponse
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
+from Authentication.models import LEVEL_THRESHOLD
 from rest_framework.permissions import (
     IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny)
 
@@ -388,6 +390,9 @@ def calculate_scores(user, quiz):
 
 
 # send user's result
+# get user's progress
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_result(request, quiz_id):
@@ -397,6 +402,7 @@ def user_result(request, quiz_id):
         score = calculate_scores(user, quiz)
         Score.create_or_update_score(user=user, quiz=quiz, score=score)
         user.scores += score
+        user_progress(user)
         return JsonResponse({'score': score})
     except Quiz.DoesNotExist:
         return JsonResponse({'error': 'Quiz not found'}, status=404)
@@ -423,6 +429,18 @@ def view_corrections(request, quiz_id):
         'answers': answers,
         'quiz': quiz,
         'score': score})
+
+
+def user_progress(user):
+    total_score = Score.objects.filter(user=user).aggregate(models.Sum('score'))['score__sum'] or 0
+    new_level = None
+    for level, threshold in LEVEL_THRESHOLD.items():
+        if total_score >= threshold:
+            new_level = level
+        if new_level:
+            user.level = Level.objects.get(name=new_level)
+            user.save()
+
 
 # administration views
 

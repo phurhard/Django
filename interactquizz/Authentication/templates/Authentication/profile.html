@@ -65,9 +65,11 @@
                 </table>
             </div>
         </div>
-        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 75%"></div>
+        <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="{{ user.get_progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{ user.get_progress_percentage }}%"></div>
           </div>
+          <p class="text-center">{{ user.level }}</p>
+          <p class="text-center">{{ user.get_progress_percentage }}</p>
     {% endblock %}
 {% block script %}
     <script src="{% static 'js/profile.js' %}"></script>
