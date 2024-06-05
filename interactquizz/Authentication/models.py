@@ -41,7 +41,7 @@ class CustomUser(AbstractBaseUser):
     first_name: Any = models.CharField(max_length=50)
     last_name: Any = models.CharField(max_length=50)
     age: Any = models.IntegerField(null=True, blank=True)
-    level: Any = models.ForeignKey('Level', default="Beginner",                                  on_delete=models.SET_DEFAULT)
+    level: Any = models.ForeignKey('Level', on_delete=models.CASCADE)
     scores: Any = models.IntegerField(default=0)
     is_active: Any = models.BooleanField(default=True)
     is_staff: Any = models.BooleanField(default=False)
@@ -70,19 +70,20 @@ class CustomUser(AbstractBaseUser):
 
     def get_progress_percentage(self):
         total_score = Score.objects.filter(user=self).aggregate(models.Sum('score'))['score__sum'] or 0
-        print(f'total score {total_score}')
+        # print(f'total score {total_score}')
         current_level_threshold = LEVEL_THRESHOLD[self.level.name]
-        print(f'current threshold {current_level_threshold}')
+        # print(f'current threshold {current_level_threshold}')
         next_level_threshold = LEVEL_THRESHOLD.get(self.get_next_level(), current_level_threshold)
-        print(f'next level threshold {next_level_threshold}')
+        # print(f'next level threshold {next_level_threshold}')
         if next_level_threshold == current_level_threshold:
             return 100
         progress_within_level = total_score - current_level_threshold
-        print(f'progress within level {progress_within_level}')
+        # print(f'progress within level {progress_within_level}')
         level_range = next_level_threshold - current_level_threshold
-        print(f'Level range {level_range}')
-        print(f'percentage {progress_within_level/level_range}')
-        return (progress_within_level/level_range) * 100
+        # print(f'Level range {level_range}')
+        # print(f'percentage {progress_within_level/level_range}')
+        percentage = (progress_within_level/level_range) * 100
+        return format(percentage, '.2f')
 
     def get_next_level(self):
         levels = list(LEVEL_THRESHOLD.keys())
