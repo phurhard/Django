@@ -18,11 +18,8 @@ document.addEventListener("DOMContentLoaded", function() {
         console.log('There is no user data');
     } else {
         const name = JSON.parse(data)
-        // console.log(document.getElementsByName('username')[0]);
-        // document.getElementsByName('username')[0].value = name;
         console.log(JSON.parse(data));
     }
 
-    // get the answers from the server
     console.log(progressBar);
 })
