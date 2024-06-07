@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from .models import CustomUser as User, Score, Quiz
+from .models import CustomUser as User, Score, Quiz, Level
 from .serializers import (
     ProfileSerializer,
     UserLoginSerializer,
@@ -28,6 +28,7 @@ class UserSignup(APIView):
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
+        level = Level.objects.get(name='Beginner')
         if serializer.is_valid():
             validated_data = serializer.validated_data
             User.objects.create_user(
@@ -35,7 +36,8 @@ class UserSignup(APIView):
                 password=validated_data['password'],
                 first_name=validated_data['first_name'],
                 last_name=validated_data['last_name'],
-                age=validated_data.get('age')
+                age=validated_data.get('age'),
+                level=level
             )
             return Response({
                 'success': True,

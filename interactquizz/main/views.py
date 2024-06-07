@@ -363,7 +363,7 @@ def submit_quiz(request):
                         question=question,
                         option=option
                     )
-                print(answers)
+                # print(f'Answers: {answers}')
 
             return JsonResponse({'message': 'Quiz submitted successfully!'})
         except Question.DoesNotExist:
@@ -373,7 +373,7 @@ def submit_quiz(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
-            print(e)
+            # print(f'Error: {e}')
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
@@ -382,9 +382,9 @@ def submit_quiz(request):
 def calculate_scores(user, quiz):
     answers = Answer.objects.filter(user=user, question__quiz=quiz)
     correct_answers = answers.filter(option__is_correct=True).count()
-    print(correct_answers)
+    # print(f'correct ans: {correct_answers}')
     total_questions = quiz.question_set.count()
-    print(total_questions)
+    # print(f'total questions: {total_questions}')
     score = (correct_answers / total_questions) * 100
     return score
 
@@ -401,21 +401,17 @@ def user_result(request, quiz_id):
         quiz = Quiz.objects.get(id=quiz_id)
         score = calculate_scores(user, quiz)
         Score.create_or_update_score(user=user, quiz=quiz, score=score)
+        print(f'Users score: {score}')
         user.scores += score
-        user_progress(user)
+        print(f'Users score: {user.scores}')
+        # user_progress(user)
+        user.update_level()
         return JsonResponse({'score': score})
     except Quiz.DoesNotExist:
         return JsonResponse({'error': 'Quiz not found'}, status=404)
     except Exception as e:
-        print(e)
+        print(f'Error na hin be this: {e}')
         return JsonResponse({'error': str(e)}, status=500)
-
-
-def leaderboard(request):
-    users = CustomUser.objects.all().order_by('-scores')
-    return Response({
-        'data': users
-    })
 
 
 def view_corrections(request, quiz_id):
@@ -434,6 +430,7 @@ def view_corrections(request, quiz_id):
 def user_progress(user):
     total_score = Score.objects.filter(user=user).aggregate(models.Sum('score'))['score__sum'] or 0
     new_level = None
+    print('here')
     for level, threshold in LEVEL_THRESHOLD.items():
         if total_score >= threshold:
             new_level = level

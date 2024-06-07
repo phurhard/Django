@@ -7,9 +7,9 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 LEVEL_THRESHOLD = {
     "Beginner": 0,
-    "Intermediate": 50,
-    "Expert": 90,
-    "StarLord": 150
+    "Intermediate": 150,
+    "Expert": 390,
+    "StarLord": 199999
 }
 
 
@@ -41,7 +41,7 @@ class CustomUser(AbstractBaseUser):
     first_name: Any = models.CharField(max_length=50)
     last_name: Any = models.CharField(max_length=50)
     age: Any = models.IntegerField(null=True, blank=True)
-    level: Any = models.ForeignKey('Level', on_delete=models.CASCADE)
+    level: Any = models.ForeignKey('Level', null=True, on_delete=models.SET_NULL)
     scores: Any = models.IntegerField(default=0)
     is_active: Any = models.BooleanField(default=True)
     is_staff: Any = models.BooleanField(default=False)
@@ -68,12 +68,16 @@ class CustomUser(AbstractBaseUser):
         """
         return self.is_active and self.is_superuser
 
+    def get_total_score(self):
+        return Score.objects.filter(user=self).aggregate(models.Sum('score'))['score__sum'] or 0
+
     def get_progress_percentage(self):
-        total_score = Score.objects.filter(user=self).aggregate(models.Sum('score'))['score__sum'] or 0
+        total_score = self.get_total_score()
+        self.update_level()
         # print(f'total score {total_score}')
-        current_level_threshold = LEVEL_THRESHOLD[self.level.name]
+        current_level_threshold = LEVEL_THRESHOLD.get(self.level, 0)
         # print(f'current threshold {current_level_threshold}')
-        next_level_threshold = LEVEL_THRESHOLD.get(self.get_next_level(), current_level_threshold)
+        next_level_threshold = self.get_next_level()
         # print(f'next level threshold {next_level_threshold}')
         if next_level_threshold == current_level_threshold:
             return 100
@@ -86,11 +90,29 @@ class CustomUser(AbstractBaseUser):
         return format(percentage, '.2f')
 
     def get_next_level(self):
-        levels = list(LEVEL_THRESHOLD.keys())
-        current_index = levels.index(self.level.name)
+        levels = list(LEVEL_THRESHOLD.values())
+        # print(f'levels {levels}')
+        current_index = levels.index(LEVEL_THRESHOLD[self.level.name])
+        # print(f'current index {current_index}')
         if current_index < len(levels) - 1:
+            # print(f'Next Level: {levels[current_index + 1]}')
             return levels[current_index + 1]
-        return self.level.name
+        # print(f'next level: {levels[-1]}')
+        return levels[-1]
+
+    def calculate_level(self, quiz_score):
+        for level, threshold in sorted(LEVEL_THRESHOLD.items(), key=lambda x: x[1]):
+            if quiz_score < threshold:
+                # print('Breaking here')
+                break
+            level = Level.objects.get(name=level)
+            self.level = level
+
+        self.save()
+
+    def update_level(self):
+        total_score = self.get_total_score()
+        self.calculate_level(total_score)
 
 
 class Subject(models.Model):
@@ -190,6 +212,11 @@ class Score(models.Model):
         else:
             # If no score exists, create a new score
             cls.objects.create(user=user, quiz=quiz, score=score)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        user, created = CustomUser.objects.get_or_create(self.user)
+        user.update_level()
 
 
 class Quiz(models.Model):
