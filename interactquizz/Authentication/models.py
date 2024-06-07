@@ -42,6 +42,7 @@ class CustomUser(AbstractBaseUser):
     last_name: Any = models.CharField(max_length=50)
     age: Any = models.IntegerField(null=True, blank=True)
     level: Any = models.ForeignKey('Level', null=True, on_delete=models.SET_NULL)
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     scores: Any = models.IntegerField(default=0)
     is_active: Any = models.BooleanField(default=True)
     is_staff: Any = models.BooleanField(default=False)
@@ -215,7 +216,7 @@ class Score(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        user, created = CustomUser.objects.get_or_create(self.user)
+        user, created = CustomUser.objects.get_or_create(pk=self.user.pk)
         user.update_level()
 
 
