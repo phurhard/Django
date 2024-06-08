@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const progressBar = document.querySelector('.progress');
 
     
-    fetch('https://source.unsplash.com/random')
+    fetch('https://source.unsplash.com/random', { mode: 'no-cors' })
     .then(response => {
 
         document.getElementById("profilePic").src = response.url;
@@ -16,11 +16,11 @@ document.addEventListener("DOMContentLoaded", function() {
     // set the username
     const data = localStorage.getItem('user');
     if (!data) {
-        console.log('There is no user data');
+        // console.log('There is no user data');
     } else {
-        const name = JSON.parse(data)
-        console.log(JSON.parse(data));
+        // const name = JSON.parse(data)
+        // console.log(JSON.parse(data));
     }
 
-    console.log(progressBar);
+    // console.log(progressBar);
 })
