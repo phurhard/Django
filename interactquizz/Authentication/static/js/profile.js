@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch('https://source.unsplash.com/random')
     .then(response => {
 
-        document.getElementById("profilePic2").src = response.url;
+        document.getElementById("profilePic").src = response.url;
     })
     .catch(error => {
         console.error('Error fetching random image:', error);
