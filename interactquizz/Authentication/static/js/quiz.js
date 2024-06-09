@@ -5,10 +5,11 @@ let userAnswers = {};
 document.addEventListener("DOMContentLoaded", function () {
     const categoryList = document.getElementById('category-list');
     const categoryItems = document.querySelectorAll('.category-list-item');
-    const buttons = document.querySelector('.control');
+    // const buttons = document.querySelector('.control');
     const quizContainer = document.getElementById('quiz-container');
     const startQuizButton = document.getElementById('start_quiz');
     const content = document.getElementById('no-quiz-selected-container');
+    const quizSelectedContainer = document.getElementById('quiz-selected-container');
     const submitQuizButton = document.getElementById('submit-quiz');
     const radioButtons = categoryList.querySelectorAll('input[type="radio"]');
 
@@ -76,7 +77,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 questions = data.question_set;
                 questions = shuffleArray(questions);
                 displayQuestion(currentQuestionIndex);
-                buttons.classList.remove('d-none');
+                // buttons.classList.remove('d-none');
+                quizSelectedContainer.classList.remove('d-none');
+                quizSelectedContainer.classList.add('d-flex');
                 content.classList.add('d-none');
             })
             .catch(err => {
@@ -145,7 +148,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         questionElement.appendChild(optionsContainer);
-        quizContainer.appendChild(questionElement);
+        container.appendChild(questionElement);
+        quizContainer.appendChild(container);
 
         const savedSelection = userAnswers[currentQuestionIndex];
         if (savedSelection !== undefined) {

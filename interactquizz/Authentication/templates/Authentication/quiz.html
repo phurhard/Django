@@ -4,70 +4,12 @@
   Start Quiz
 {% endblock %}
 {% block link %}
-  <style>
-            /* Custom styles */
-          body {
-              margin-top: 50px;
-          }
-          
-          .question-container {
-              width: 100%;
-              height: auto;
-              border: 1px solid #ccc;
-              padding: 20px;
-              margin-bottom: 20px;
-          }
-          
-          .answer-options {
-              margin-bottom: 20px;
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-          }
-          
-          .answer-option {
-              margin-bottom: 10px;
-              width: 100%;
-          }
-          
-          .centered-buttons {
-              display: flex;
-              justify-content: center;
-          }
-          
-          .category-list {
-              padding-left: 0;
-          }
-          
-          .category-list-item {
-              list-style: none;
-              cursor: pointer;
-              padding: 10px;
-              margin-bottom: 10px;
-          }
-          .question-title {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .options-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-        
-        .option-item {
-            display: flex;
-            align-items: center;
-        }
-  
-  </style>
   <meta name="csrf-token" content="{% csrf_token %}">
-  {% endblock %}
+  <link href="{% static 'css/quiz.css' %}" rel="stylesheet" />
+{% endblock %}
 
 {% block content %}
-  <div class="row">
+  <div class="row main_row">
     <div class="col-md-3 aside-column">
       <h4>Select Quiz Type</h4>
       <ul class="category-list" id="category-list">
@@ -90,15 +32,15 @@
           <img src="https://source.unsplash.com/random" width="auto" height="300px" alt="select" class="img img-responsive" />
           <p class="text">Select a quiz category from the aside panel</p>
       </div>
-      <div class="row" id="quiz-selected-container">
-        <div id="quiz-container"></div>
-        <div class="col-12 text-center control d-none">
-          <div class="btn-group centered-buttons">
+      <div class="row flex-column d-none" id="quiz-selected-container" style="border: 2px solid red; margin: auto;">
+        <div id="quiz-container" class="border border-primary"></div>
+        {% comment %} <div class="col-12 text-center control border border-secondary"> {% endcomment %}
+          <div class="btn-group centered-buttons border border-success">
             <button class="btn btn-primary mr-2" onclick="showNextQuestion()">Next</button>
             <button class="btn btn-primary mr-2" onclick="showPreviousQuestion()">Previous</button>
             <button class="btn btn-primary" id="submit-quiz">Submit</button>
           </div>
-        </div>
+        {% comment %} </div> {% endcomment %}
       </div>
 
     </div>
