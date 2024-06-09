@@ -1,6 +1,8 @@
 from typing import Annotated, Any
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.conf import settings
+from django.utils.html import mark_safe
 
 # Create your models here.
 
@@ -114,6 +116,14 @@ class CustomUser(AbstractBaseUser):
     def update_level(self):
         total_score = self.get_total_score()
         self.calculate_level(total_score)
+
+    def image_tag(self):
+        print(self.profile_image)
+        if self.profile_image:
+            image_url = f'{settings.MEDIA_URL}{self.profile_image.name}'
+            return mark_safe(f'<img src="{image_url}" width="60" />')
+        else:
+            return "No image provided"
 
 
 class Subject(models.Model):

@@ -71,9 +71,14 @@
         </div>
         <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="{{ user.get_progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
             <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: {{ user.get_progress_percentage }}%"></div>
-          </div>
-          <p class="text-center">{{ user.level }}</p>
-          <p class="text-center">{{ user.get_progress_percentage }}</p>
+        </div>
+        <p class="text-center">{{ user.level }}</p>
+        <p class="text-center">{{ user.get_progress_percentage }}</p>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Upload Image</button>
+        </form>
     {% endblock %}
 {% block script %}
     <script src="{% static 'js/profile.js' %}"></script>

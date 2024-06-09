@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.files.storage import FileSystemStorage
+from .forms import ProfileImageUpload
+from django.conf import settings
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenViewBase
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -148,14 +150,19 @@ def profile_view(request):
     serializer = ScoreSerializer(scores, many=True)
     if request.method == 'POST' and request.FILES.get('profile_image'):
         profile_image = request.FILES['profile_image']
-        fs = FileSystemStorage()
+        fs = FileSystemStorage(location=settings.MEDIA_ROOT)
         filename = fs.save(profile_image.name, profile_image)
         uploaded_file_url = fs.url(filename)
-        user.profile_image = uploaded_file_url
+        user.profile_image = filename
         user.save()
         return redirect('profile')
-    return render(request, 'Authentication/profile.html',
-                  {'scores': serializer.data, 'user': user})
+    else:
+        form = ProfileImageUpload(instance=user)
+    return render(request, 'Authentication/profile.html', {
+        'scores': serializer.data,
+        'user': user,
+        'form': form
+        })
 
 
 @login_required
