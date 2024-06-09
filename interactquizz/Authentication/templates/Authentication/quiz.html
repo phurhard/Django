@@ -73,8 +73,8 @@
       <ul class="category-list" id="category-list">
         {% if quizes %}
           {% for quiz in quizes %}
-            <li class="category-list-item" data-description="{{ quiz.description }}">
-              <input type="radio" name="quiz_type" class="form-contr" id="{{ quiz.id }}" value="{{ quiz.id }}" {% if quiz in quizes_taken %}disabled{% endif %}/>
+            <li class="category-list-item" data-description="{{ quiz.description }}" {% if quiz in quizes_taken %} hidden{% endif %}>
+              <input type="radio" name="quiz_type" class="form-contr" id="{{ quiz.id }}" value="{{ quiz.id }}" {% if quiz in quizes_taken %} hidden disabled{% endif %}/>
               <label for="{{ quiz.id }}" class="form-label">{{ quiz.title }}</label>
             </li>
           {% endfor %}

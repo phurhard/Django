@@ -154,7 +154,6 @@ document.addEventListener("DOMContentLoaded", function () {
         
     };
     // submit the quizzes
-    // const correctionURL = "{% url 'view-corrections' %}";
     submitQuizButton.addEventListener('click', function () {
         saveSelection();
         console.log('user answers: ', userAnswers);
