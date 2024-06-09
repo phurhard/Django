@@ -1,5 +1,6 @@
 from rest_framework import status
-from django.db.models import Count
+from django.db.models import Count, Sum
+from django.db.models.functions import Coalesce
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -169,13 +170,16 @@ def profile_view(request):
 def home_view(request):
     '''
     This renders the home page'''
-    users = User.objects.all()
-    top_users = users.order_by('-scores')[:3]
-    serializer = ProfileSerializer(top_users, many=True)
-    leaderboard = users.order_by('-scores')
+    users = User.objects.annotate(total_score=Coalesce(Sum('score__score'), 0))
+    top_users = users.order_by('-total_score')[:3]
+    top_users_serializer = ProfileSerializer(top_users, many=True)
+    leaderboard = users.order_by('-total_score')
     leaderboard_serializer = ProfileSerializer(leaderboard, many=True)
-    return render(request, 'Authentication/home.html',
-                  {'top_users': serializer.data, 'leaderboard': leaderboard_serializer.data})
+    context = {
+        'top_users': top_users_serializer.data,
+        'leaderboard': leaderboard_serializer.data
+        }
+    return render(request, 'Authentication/home.html', context)
 
 
 @login_required

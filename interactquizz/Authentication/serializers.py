@@ -39,6 +39,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    total_score = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = CustomUser

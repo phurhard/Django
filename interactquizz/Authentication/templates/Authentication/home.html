@@ -44,6 +44,7 @@ Intelligent-Quizz
                     <div class="card-header">{{ user.email }}</div>
                     <div class="card-body">
                         <!-- Body Content -->
+                         <p class="text">{{ user.total_score }}</p>
                     </div>
                     <div class="card-footer">{{ user.first_name }} | {{ user.last_name }}</div>
                 </div>
@@ -83,14 +84,30 @@ Intelligent-Quizz
         <!-- Leaderboard -->
         <div class="row mt-4">
             <div class="col">
-                <h3>Leaderboard</h3>
+                <h2>Leaderboard</h2>
                 {% if leaderboard %}
-                <ul class="list-group">
-                    {% for user in leaderboard %}
-                    <li class="list-group-item"><span>{{ user.email}}</span>  <span>{{ user.scores }}</span>
-                    </li>
-                    {% endfor %}
-                </ul>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>User</th>
+                            <th>Total Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in leaderboard %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.total_score }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">No users found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% else %}
                 <p>No leaderboard data available.</p>
                 {% endif %}
