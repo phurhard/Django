@@ -133,6 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const optionsContainer = document.createElement('div');
         optionsContainer.classList.add('options-container');
+        shuffleArray(question.options);
         question.options.forEach(option => {
             const optionElement = document.createElement('div');
             optionElement.classList.add('option-item');
