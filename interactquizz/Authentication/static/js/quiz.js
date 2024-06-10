@@ -1,6 +1,7 @@
 let currentQuestionIndex = 0;
 let questions = [];
 let userAnswers = {};
+let quizSubmitted = false;
 
 document.addEventListener("DOMContentLoaded", function () {
     const categoryList = document.getElementById('category-list');
@@ -74,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return res.json();
             })
             .then(data => {
-                console.log('this is the data', data.level)
+                // console.log('this is the data', data.level)
                 questions = data.quiz.question_set;
                 time_limit = data.level.time_limit;
                 // pass the time limit in the function for creating a time limit
@@ -188,6 +189,10 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     // submit the quizzes
     function submitQuiz() {
+        if (quizSubmitted) {
+            return
+        }
+        quizSubmitted = true;
         clearInterval(timeInterval);
         saveSelection();
         console.log('user answers: ', userAnswers);

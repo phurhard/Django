@@ -351,15 +351,15 @@ def get_questions(request, pk):
         level = quiz.question_set.first().level
         # time_limit = level.time_limit
         Level_serializer = LevelSerializer(level)
-        print(Level_serializer.data)
-        print(serializer.data)
+        # print(Level_serializer.data)
+        # print(serializer.data)
         return JsonResponse({
             'quiz': serializer.data,
             'level': Level_serializer.data
         })
 
 
-@csrf_exempt
+# @csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def submit_quiz(request):
@@ -419,7 +419,7 @@ def user_result(request, quiz_id):
         Score.create_or_update_score(user=user, quiz=quiz, score=score)
         print(f'Users score: {score}')
         user.scores += score
-        print(f'Users score: {user.scores}')
+        print(f'User.score: {user.scores}')
         # user_progress(user)
         user.update_level()
         return JsonResponse({'score': score})
@@ -435,12 +435,33 @@ def view_corrections(request, quiz_id):
     answers = Answer.objects.filter(user=user, question__quiz=quiz_id)
     quiz = Quiz.objects.get(pk=quiz_id)
     score = Score.objects.get(user=user, quiz=quiz)
+
+    all_questions = quiz.question_set.all()
+    all_question_count = all_questions.count()
+    answered_question = set(answers.values_list('question_id', flat=True))
+    skipped_question = all_question_count - len(answered_question)
+
+    correct_count = 0
+    incorrect_count = 0
     for answer in answers:
         answer.correct_options = answer.question.options.filter(is_correct=True)
+        correct_options = set(answer.question.options.filter(is_correct=True).values_list('id', flat=True))
+
+        if answer.option_id in correct_options:
+            correct_count += 1
+        else:
+            incorrect_count += 1
+
+
     return render(request, 'Authentication/view_corrections.html', {
         'answers': answers,
         'quiz': quiz,
-        'score': score})
+        'score': score,
+        'skipped': skipped_question,
+        'correct_question': correct_count,
+        'incorrect_question': incorrect_count,
+        'allQuestion': all_question_count
+        })
 
 
 def user_progress(user):

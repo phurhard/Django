@@ -33,13 +33,26 @@ View corrections
 {% endblock %}
 {% block content %}
 <div class="row">
-    <div class="aside-column">
+    <div class="aside-column col-md-3">
         <div class="card">
             <div class="card-header">
                 <p class="text">{{ quiz.title }}</p>
             </div>
             <div class="card-body">
                 <p class="text">{{ score.score }}</p>
+                <p class="text">Correctly Answered 
+                    <span>{{ correct_question }} </span>
+                </p>
+                <p class="text">Skipped question 
+                    <span>{{ skipped }}</span>
+                </p>
+                <p class="text">InCorrectly Answered 
+                    <span>{{ incorrect_question }} </span>
+                </p>
+                <p class="text">All questions 
+                    <span>{{ allQuestion }} </span>
+                </p>
+                
             </div>
         </div>
     </div>
