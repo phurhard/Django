@@ -74,7 +74,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 return res.json();
             })
             .then(data => {
-                questions = data.question_set;
+                console.log('this is the data', data.level)
+                questions = data.quiz.question_set;
+                time_limit = data.level.time_limit;
+                // pass the time limit in the function for creating a time limit
+                const display = document.createElement('div');
+                display.classList.add('container');
+                quizSelectedContainer.appendChild(display);
+                timeInterval(time_limit, display);
                 questions = shuffleArray(questions);
                 displayQuestion(currentQuestionIndex);
                 // buttons.classList.remove('d-none');
@@ -112,6 +119,26 @@ document.addEventListener("DOMContentLoaded", function () {
     window.redirect = function() {
         const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
         window.location.href = `/main/corrections/${selectedCategory.value}/`
+    }
+
+    function timeInterval(time_limit, display) {
+        //time limit of quizes
+        let time = time_limit * 60;
+        let timer = time, minutes, seconds;
+        timerInterval = setInterval(function() {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timeInterval);
+                submitQuiz();
+            }
+        }, 1000);
     }
 
     function displayQuestion(index) {
@@ -160,11 +187,16 @@ document.addEventListener("DOMContentLoaded", function () {
         
     };
     // submit the quizzes
-    submitQuizButton.addEventListener('click', function () {
+    function submitQuiz() {
+        clearInterval(timeInterval);
         saveSelection();
         console.log('user answers: ', userAnswers);
         collateResults();
         showModal();
+    }
+
+    submitQuizButton.addEventListener('click', function () {
+        submitQuiz();
 
     });
 

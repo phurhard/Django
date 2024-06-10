@@ -145,6 +145,7 @@ class Level(models.Model):
     name: Annotated[models.CharField, Any] = models.CharField(
         max_length=50, choices=LEVEL_CHOICES, default="Beginner",
         null=False, unique=True)
+    time_limit = models.IntegerField(default=1, help_text="Time limit for the questions in this level")
 
     def __str__(self):
         return self.name

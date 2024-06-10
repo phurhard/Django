@@ -25,6 +25,7 @@ from Authentication.models import (
 
 from .serializers import (
     AnswerSerializer,
+    LevelSerializer,
     QuestionSerializer,
     QuizSerializer,
     ScoreSerializer,
@@ -343,6 +344,21 @@ class OptionView(APIView):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
+def get_questions(request, pk):
+    if request.method == "GET":
+        quiz = Quiz.objects.get(pk=pk)
+        serializer = QuizSerializer(quiz)
+        level = quiz.question_set.first().level
+        # time_limit = level.time_limit
+        Level_serializer = LevelSerializer(level)
+        print(Level_serializer.data)
+        print(serializer.data)
+        return JsonResponse({
+            'quiz': serializer.data,
+            'level': Level_serializer.data
+        })
+
+
 @csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -373,7 +389,7 @@ def submit_quiz(request):
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
-            # print(f'Error: {e}')
+            print(f'Error: {e}')
             return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
