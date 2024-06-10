@@ -149,16 +149,18 @@ def profile_view(request):
     user = request.user
     scores = Score.objects.filter(user=user)
     serializer = ScoreSerializer(scores, many=True)
+
     if request.method == 'POST' and request.FILES.get('profile_image'):
         profile_image = request.FILES['profile_image']
         fs = FileSystemStorage(location=settings.MEDIA_ROOT)
         filename = fs.save(profile_image.name, profile_image)
-        uploaded_file_url = fs.url(filename)
+        # uploaded_file_url = fs.url(filename)
         user.profile_image = filename
         user.save()
         return redirect('profile')
     else:
         form = ProfileImageUpload(instance=user)
+
     return render(request, 'Authentication/profile.html', {
         'scores': serializer.data,
         'user': user,

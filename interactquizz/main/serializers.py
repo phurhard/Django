@@ -60,6 +60,7 @@ class AnswerSerializer(serializers.ModelSerializer):
 class ScoreSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     quiz = serializers.SerializerMethodField()
+    question_level = serializers.SerializerMethodField()
 
     class Meta:
         model = Score
@@ -70,6 +71,12 @@ class ScoreSerializer(serializers.ModelSerializer):
 
     def get_quiz(self, obj):
         return obj.quiz.title
+
+    def get_question_level(self, obj):
+        if obj.quiz.question_set.exists():
+            # print(obj.quiz.question_set.first().level.name)
+            return obj.quiz.question_set.first().level.name
+        return None
 
 
 class QuizSerializer(serializers.ModelSerializer):
