@@ -189,9 +189,15 @@ def quiz_view(request):
     gets all the quiz objs'''
     user = request.user
     user_scores = Score.objects.filter(user=user)
+    user_level = user.level
     quizes_taken = Quiz.objects.filter(score__in=user_scores)
     quizserializer = QuizSerializer(quizes_taken, many=True)
-    quizzes = Quiz.objects.annotate(num_questions=Count('question')).filter(num_questions__gt=0)
+    quizzes = Quiz.objects.annotate(
+        num_questions=Count('question')
+        ).filter(
+            num_questions__gt=0,
+            question__level=user_level
+            ).distinct()
     serializer = QuizSerializer(quizzes, many=True)
     return render(request, 'Authentication/quiz.html',
                   {'quizes': serializer.data,
