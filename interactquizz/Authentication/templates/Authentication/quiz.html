@@ -32,10 +32,10 @@
           <img src="https://source.unsplash.com/random" width="auto" height="300px" alt="select" class="img img-responsive" />
           <p class="text">Select a quiz category from the aside panel</p>
       </div>
-      <div class="row flex-column d-none" id="quiz-selected-container" style="border: 2px solid red; margin: auto;">
-        <div id="quiz-container" class="border border-primary"></div>
+      <div class="row flex-column d-none" id="quiz-selected-container" style="margin: auto;">
+        <div id="quiz-container" class="container text-center"></div>
         {% comment %} <div class="col-12 text-center control border border-secondary"> {% endcomment %}
-          <div class="btn-group centered-buttons border border-success">
+          <div class="btn-group centered-buttons">
             <button class="btn btn-primary mr-2" onclick="showNextQuestion()">Next</button>
             <button class="btn btn-primary mr-2" onclick="showPreviousQuestion()">Previous</button>
             <button class="btn btn-primary" id="submit-quiz">Submit</button>

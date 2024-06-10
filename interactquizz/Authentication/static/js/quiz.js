@@ -129,17 +129,19 @@ document.addEventListener("DOMContentLoaded", function () {
         const questionElement = document.createElement('div');
         questionElement.classList.add('card-body');
 
-        const questionTitle = document.createElement('div');
+        const questionTitle = document.createElement('h2');
         questionTitle.classList.add('question-title');
-        questionTitle.innerHTML = `<h2>${index + 1}. ${question.question_text}</h2>`;
+        questionTitle.innerHTML = `<span>${index + 1}. ${question.question_text}</span>`;
         questionElement.appendChild(questionTitle);
 
         const optionsContainer = document.createElement('div');
         optionsContainer.classList.add('options-container');
+        optionsContainer.classList.add('row');
         shuffleArray(question.options);
         question.options.forEach(option => {
             const optionElement = document.createElement('div');
             optionElement.classList.add('option-item');
+            optionElement.classList.add('col');
             optionElement.innerHTML = `
                 <input type="radio" class="form-check-input" name="option" value="${option.id}" id="option${option.id}">
                 <label class="form-check-label" for="options${option.id}">${option.text}</label>
@@ -200,12 +202,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // collate the results
     function collateResults() {
-        const finalAnswers = collectUserAnswers();const csrftoken = getCsrfToken();
+        const finalAnswers = collectUserAnswers();
+        const csrftoken = getCsrfToken();
         const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
         fetch('http://127.0.0.1:8000/main/score/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json','X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             },
             body: JSON.stringify(finalAnswers)
