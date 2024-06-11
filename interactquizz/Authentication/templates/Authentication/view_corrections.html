@@ -33,30 +33,66 @@ View corrections
 {% endblock %}
 {% block content %}
 <div class="row">
-    <div class="aside-column col-md-3">
-        <div class="card">
-            <div class="card-header">
-                <p class="text">{{ quiz.title }}</p>
+    <div class="aside-column col-md-4">
+        {% comment %} <table class="table">
+            <thead>
+                <th scope="col">Quiz Name</th>
+                <th scope="col">Your Score</th>
+                <th scope="col">Correctly Answered</th>
+                <th scope="col">Skipped</th>
+                <th scope="col">InCorrectly Answered</th>
+                <th scope="col">No of Questions</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ quiz.title }}</td>
+                    <td>{{ score.score }}</td>
+                    <td>{{ correct_question }}</td>
+                    <td>{{ skipped }}</td>
+                    <td>{{ incorrect_question }}</td>
+                    <td>{{allQuestion }}</td>
+                </tr>
+            </tbody>
+        </table> {% endcomment %}
+        <div class="container text-center">
+            <div class="row align-items-start mb-2">
+                <div class="col">
+                    Quiz Title
+                    <p class="h3">{{ quiz.title }}</p>
+                </div>
             </div>
-            <div class="card-body">
-                <p class="text">{{ score.score }}</p>
-                <p class="text">Correctly Answered 
-                    <span>{{ correct_question }} </span>
-                </p>
-                <p class="text">Skipped question 
-                    <span>{{ skipped }}</span>
-                </p>
-                <p class="text">InCorrectly Answered 
-                    <span>{{ incorrect_question }} </span>
-                </p>
-                <p class="text">All questions 
-                    <span>{{ allQuestion }} </span>
-                </p>
-                
+            <div class="row pie align-items-center"></div>
+            <div class="row align-items-end">
+                <div class="col border border-secondary shadow-sm p-2 mb-5 bg-body-tertiary rounded">
+                    <span class="small">Your Score</span>
+                        <p class="h5">{{ score.score }}</p>
+                    
+                </div>
+                <div class="col border border-secondary shadow-sm p-2 mb-5 bg-body-tertiary rounded">
+                    <span class="small">Correct Answers</span>
+                        <p class="h5">{{ correct_question }} </p>
+                    
+                </div>
+                <div class="col border border-secondary shadow-sm p-2 mb-5 bg-body-tertiary rounded">
+                    <span class="small">Skipped Question </span>
+
+                        <p class="h5">{{ skipped }}</p>
+                    
+                </div>
+                <div class="col border border-secondary shadow-sm p-2 mb-5 bg-body-tertiary rounded">
+                    <span class="small">Wrong Answers </span>
+                        <p class="h5">{{ incorrect_question }} </p>
+                    
+                </div>
+                <div class="col border border-secondary shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+                    <span class="small">All Questions </span>
+                        <p class="h5">{{ allQuestion }} </p>
+                    
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-9">
+    <div class="col-md-6">
         
         {% for ans in answers %}
 
