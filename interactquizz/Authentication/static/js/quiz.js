@@ -122,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = `/main/corrections/${selectedCategory.value}/`
     }
 
+    let timerInterval;
     function timeInterval(time_limit, display) {
         //time limit of quizes
         let time = time_limit * 60;
@@ -135,8 +136,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             display.textContent = minutes + ":" + seconds;
 
-            if (--timer == 0) {
-                clearInterval(timeInterval);
+            if (--timer < 0) {
+                clearInterval(timerInterval);
                 submitQuiz();
             }
         }, 1000);
@@ -193,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //     return
         // }
         // quizSubmitted = true;
-        // clearInterval(timeInterval);
+        clearInterval(timerInterval);
         saveSelection();
         // console.log('user answers: ', userAnswers);
         collateResults();
