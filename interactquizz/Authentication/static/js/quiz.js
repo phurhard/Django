@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             display.textContent = minutes + ":" + seconds;
 
-            if (--timer < 0) {
+            if (--timer == 0) {
                 clearInterval(timeInterval);
                 submitQuiz();
             }
@@ -189,13 +189,13 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     // submit the quizzes
     function submitQuiz() {
-        if (quizSubmitted) {
-            return
-        }
-        quizSubmitted = true;
-        clearInterval(timeInterval);
+        // if (quizSubmitted) {
+        //     return
+        // }
+        // quizSubmitted = true;
+        // clearInterval(timeInterval);
         saveSelection();
-        console.log('user answers: ', userAnswers);
+        // console.log('user answers: ', userAnswers);
         collateResults();
         showModal();
     }
