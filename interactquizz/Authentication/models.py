@@ -100,13 +100,11 @@ class CustomUser(AbstractBaseUser):
         if current_index < len(levels) - 1:
             # print(f'Next Level: {levels[current_index + 1]}')
             return levels[current_index + 1]
-        # print(f'next level: {levels[-1]}')
         return levels[-1]
 
     def calculate_level(self, quiz_score):
         for level, threshold in sorted(LEVEL_THRESHOLD.items(), key=lambda x: x[1]):
             if quiz_score < threshold:
-                # print('Breaking here')
                 break
             level = Level.objects.get(name=level)
             self.level = level
@@ -118,10 +116,8 @@ class CustomUser(AbstractBaseUser):
         self.calculate_level(total_score)
 
     def image_tag(self):
-        # print(f'Availabe {self.profile_image}')
         if self.profile_image:
             image_url = f'{settings.MEDIA_URL}{self.profile_image.name}'
-            # print(f'Image url: {image_url}')
             return mark_safe(f'<img src="{image_url}" width="60" />')
         else:
             return "No image provided"
@@ -232,10 +228,23 @@ class Score(models.Model):
         user.update_level()
 
 
+def get_default_level():
+    default_level, created = Level.objects.get_or_create(
+        name='Beginner',
+        defaults={'time_limit': 1}
+    )
+    return default_level.id
+
+
 class Quiz(models.Model):
     """Individual quiz."""
     title: Annotated[models.CharField, Any] = models.CharField(max_length=100)
     description: Annotated[models.TextField, Any] = models.TextField()
+    level: Annotated[models.ForeignKey, Any] = models.ForeignKey(
+        'Level', null=False, default=get_default_level, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        unique_together = [['title', 'level']]

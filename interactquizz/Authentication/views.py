@@ -198,7 +198,8 @@ def quiz_view(request):
         num_questions=Count('question')
         ).filter(
             num_questions__gt=0,
-            question__level=user_level
+            question__level=user_level,
+            level=user_level
             ).distinct()
     serializer = QuizSerializer(quizzes, many=True)
     return render(request, 'Authentication/quiz.html',
