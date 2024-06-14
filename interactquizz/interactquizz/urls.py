@@ -16,6 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
 from Authentication import urls
 from main import urls as mainurls
 from drf_spectacular.views import (
@@ -31,5 +33,4 @@ urlpatterns = [
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     path('main/', include(mainurls)),
     path('auth/', include(urls)),
-    # path('api-auth/', include('rest_framework.urls')),
-]
+]   + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

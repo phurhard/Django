@@ -3,16 +3,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // set image for the user
     const progressBar = document.querySelector('.progress');
 
-    
-    fetch('https://source.unsplash.com/random', { mode: 'no-cors' })
-    .then(response => {
-
-        document.getElementById("profilePic").src = response.url;
-    })
-    .catch(error => {
-        console.error('Error fetching random image:', error);
-    });
-
     // set the username
     const data = localStorage.getItem('user');
     if (!data) {

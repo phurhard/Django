@@ -1,6 +1,7 @@
 import os
 import django
 import requests
+import time
 from Authentication.models import Level, Quiz, Question, Option
 
 # Set up Django environment
@@ -42,7 +43,7 @@ for url in hardURL:
         data = res.get("results")
         # creating or get a quiz
         for res in data:
-            # print(f'url: {url}')
+            time.sleep(5)
             quiz, created = Quiz.objects.get_or_create(title=res['category'])
             level = Level.objects.get(name='Expert')
             question = Question.objects.create(
@@ -54,4 +55,46 @@ for url in hardURL:
             for ans in res['incorrect_answers']:
                 Option.objects.create(question=question, text=ans, is_correct=False)
     else:
-        print(f'Failed to fetch data:  {url} - {req}')        
+        print(f'Failed to fetch data:  {url} - {req}')
+
+for url in hardURL:
+    req = requests.get(url)
+    if req.status_code == 200:
+        res = req.json()
+        data = res.get("results")
+        # creating or get a quiz
+        for res in data:
+            time.sleep(5)
+            quiz, created = Quiz.objects.get_or_create(title=res['category'])
+            level = Level.objects.get(name='Expert')
+            question = Question.objects.create(
+                quiz=quiz,
+                level=level,
+                question_text=res['question']
+            )
+            Option.objects.create(question=question, text=res['correct_answer'], is_correct=True),
+            for ans in res['incorrect_answers']:
+                Option.objects.create(question=question, text=ans, is_correct=False)
+    else:
+        print(f'Failed to fetch data:  {url} - {req}')
+
+for url in mediumURL:
+    req = requests.get(url)
+    if req.status_code == 200:
+        res = req.json()
+        data = res.get("results")
+        # creating or get a quiz
+        for res in data:
+            time.sleep(5)
+            quiz, created = Quiz.objects.get_or_create(title=res['category'])
+            level = Level.objects.get(name='Intermediate')
+            question = Question.objects.create(
+                quiz=quiz,
+                level=level,
+                question_text=res['question']
+            )
+            Option.objects.create(question=question, text=res['correct_answer'], is_correct=True),
+            for ans in res['incorrect_answers']:
+                Option.objects.create(question=question, text=ans, is_correct=False)
+    else:
+        print(f'Failed to fetch data:  {url} - {req}')

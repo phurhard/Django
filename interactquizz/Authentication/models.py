@@ -118,9 +118,10 @@ class CustomUser(AbstractBaseUser):
         self.calculate_level(total_score)
 
     def image_tag(self):
-        print(self.profile_image)
+        # print(f'Availabe {self.profile_image}')
         if self.profile_image:
             image_url = f'{settings.MEDIA_URL}{self.profile_image.name}'
+            # print(f'Image url: {image_url}')
             return mark_safe(f'<img src="{image_url}" width="60" />')
         else:
             return "No image provided"
