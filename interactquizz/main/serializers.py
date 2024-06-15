@@ -81,6 +81,7 @@ class ScoreSerializer(serializers.ModelSerializer):
 
 class QuizSerializer(serializers.ModelSerializer):
     question_set = QuestionSerializer(many=True, read_only=True)
+    level = LevelSerializer(read_only=True)
 
     class Meta:
         model = Quiz

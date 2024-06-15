@@ -244,7 +244,7 @@ class Quiz(models.Model):
         'Level', null=False, default=get_default_level, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.title
+        return f"{self.title} {self.level.name}"
 
     class Meta:
         unique_together = [['title', 'level']]
