@@ -207,6 +207,7 @@ def quiz_view(request):
                    'quizes_taken': quizserializer.data})
 
 
+@login_required
 def logout_view(request):
     '''Logs out the user'''
     logout(request)

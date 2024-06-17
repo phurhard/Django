@@ -9,9 +9,9 @@ from django.utils.html import mark_safe
 
 LEVEL_THRESHOLD = {
     "Beginner": 0,
-    "Intermediate": 150,
-    "Expert": 390,
-    "StarLord": 199999
+    "Intermediate": 350,
+    "Expert": 790,
+    "StarLord": 1000
 }
 
 
@@ -204,7 +204,7 @@ class Score(models.Model):
     score: Annotated[models.IntegerField, Any] = models.IntegerField()
 
     def __str__(self):
-        return f"{self.user} - {self.quiz} - {self.score}"
+        return f"{self.user} - {self.score}"
 
     class Meta:
         unique_together = [['user', 'quiz']]
