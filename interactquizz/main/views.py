@@ -368,18 +368,23 @@ def submit_quiz(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
+            # print(f'data from frontend: {data}')
             user = request.user
+            # print(f'current signed in user: {user}')
             for key, value in data.items():
+                # print(f'Key and value pair of the data: {key} {value}')
                 option = Option.objects.get(pk=value)
                 question = Question.objects.get(pk=option.question_id)
                 question_answered = Question.objects.get(pk=key)
+                # print(f'question answered {question}, option choosen {option}')
                 if question == question_answered:
                     answers = Answer.objects.create(
                         user=user,
                         question=question,
                         option=option
                     )
-                # print(f'Answers: {answers}')
+            #         print(f'Answer instance created: {answers}')
+            # print(f'All Answers for user {user} in quiz: {answers}')
 
             return JsonResponse({'message': 'Quiz submitted successfully!'})
         except Question.DoesNotExist:
@@ -397,6 +402,7 @@ def submit_quiz(request):
 
 def calculate_scores(user, quiz):
     answers = Answer.objects.filter(user=user, question__quiz=quiz)
+    # print(f'Users answers for that quiz: {answers}')
     correct_answers = answers.filter(option__is_correct=True).count()
     # print(f'correct ans: {correct_answers}')
     total_questions = quiz.question_set.count()
@@ -416,10 +422,11 @@ def user_result(request, quiz_id):
         user = request.user
         quiz = Quiz.objects.get(id=quiz_id)
         score = calculate_scores(user, quiz)
-        Score.create_or_update_score(user=user, quiz=quiz, score=score)
-        print(f'Users score: {score}')
+        user_score_instance = Score.objects.update_or_create(user=user, quiz=quiz, score=score)
+        # print(f'Users score: {score}')
+        # print(f'User score instance: {user_score_instance}')
         user.scores += score
-        print(f'User.score: {user.scores}')
+        # print(f'User.score: {user.scores}')
         # user_progress(user)
         user.update_level()
         return JsonResponse({'score': score})
@@ -434,6 +441,8 @@ def view_corrections(request, quiz_id):
     user = request.user
     answers = Answer.objects.filter(user=user, question__quiz=quiz_id)
     quiz = Quiz.objects.get(pk=quiz_id)
+    # print(f'The quiz: {quiz.id}')
+    # print(f'The user: {user.id}')
     score = Score.objects.get(user=user, quiz=quiz)
 
     all_questions = quiz.question_set.all()
@@ -451,8 +460,6 @@ def view_corrections(request, quiz_id):
             correct_count += 1
         else:
             incorrect_count += 1
-
-
     return render(request, 'Authentication/view_corrections.html', {
         'answers': answers,
         'quiz': quiz,

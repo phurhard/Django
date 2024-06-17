@@ -218,9 +218,11 @@ class Score(models.Model):
             # If a score exists, update the score
             existing_score.score = score
             existing_score.save()
+            return existing_score
         else:
             # If no score exists, create a new score
-            cls.objects.create(user=user, quiz=quiz, score=score)
+            new_score = cls.objects.create(user=user, quiz=quiz, score=score)
+            return new_score
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

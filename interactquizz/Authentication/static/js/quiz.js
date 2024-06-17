@@ -190,10 +190,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     // submit the quizzes
     function submitQuiz() {
-        // if (quizSubmitted) {
-        //     return
-        // }
-        // quizSubmitted = true;
         clearInterval(timerInterval);
         saveSelection();
         // console.log('user answers: ', userAnswers);
@@ -243,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const finalAnswers = collectUserAnswers();
         const csrftoken = getCsrfToken();
         const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
-        fetch('http://127.0.0.1:8000/main/score/', {
+        fetch('http://127.0.0.1:8000/main/submit_quiz/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
