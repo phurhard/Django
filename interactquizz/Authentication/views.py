@@ -79,7 +79,7 @@ class AdminSignup(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        return render(request, 'Authentication/register.html')
+        return render(request, 'Authentication/registerAdmin.html')
 
 
 class UserLogin(APIView):
@@ -140,6 +140,10 @@ class RefreshTokenView(TokenViewBase):
         refresh_token = serializer.validated_data.get('refresh')
         access_token = RefreshToken(refresh_token).access_token
         return Response({'access': str(access_token)})
+
+
+def landing_page(request):
+    return render(request, 'Authentication/landing_page.html')
 
 
 @login_required

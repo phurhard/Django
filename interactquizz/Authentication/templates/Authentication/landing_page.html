@@ -1,0 +1,12 @@
+{% extends 'Authentication/base.html' %}
+{% load static %}
+{% block nav %}
+
+{% endblock %}
+{% block content %}
+<div class="container text-center d-flex justify-content-center align-items-center" style="width: 100%; height:100vh;">
+    <div>
+      <button class="btn btn-primary btn-lg"><a style="text-decoration: none; color: white;" href="{% url 'login' %}">Login</a></button>
+  </div>
+</div>
+{% endblock %}

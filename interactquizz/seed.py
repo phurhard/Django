@@ -35,9 +35,9 @@ hardURL = [
     # "https://opentdb.com/api.php?amount=15&category=28&difficulty=hard&type=multiple"]
 
 # urls = [easyurl, mediumURL, hardURL]
-ha = ["https://opentdb.com/api.php?amount=15&category=21&difficulty=hard&type=multiple"]
+ha = ["https://opentdb.com/api.php?amount=15&category=21&difficulty=hard&type=multiple", "https://opentdb.com/api.php?amount=15&category=22&difficulty=hard&type=multiple"]
 for url in ha:
-    time.sleep(2)
+    time.sleep(1)
 
     req = requests.get(url)
     if req.status_code == 200:
@@ -45,7 +45,7 @@ for url in ha:
         data = res.get("results")
         # creating or get a quiz
         for res in data:
-            time.sleep(5)
+            time.sleep(2)
             level, created = Level.objects.get_or_create(name='Expert')
             level.time_limit = 15
             level.save()
@@ -63,7 +63,7 @@ for url in ha:
 
 
 # for url in mediumURL:
-#     time.sleep(2)
+#     time.sleep(1)
 
 #     req = requests.get(url)
 #     if req.status_code == 200:
@@ -71,7 +71,7 @@ for url in ha:
 #         data = res.get("results")
 #         # creating or get a quiz
 #         for res in data:
-#             time.sleep(5)
+#             time.sleep(2)
 #             level, created = Level.objects.get_or_create(name='Intermediate')
 #             level.time_limit = 15
 #             level.save()
@@ -89,7 +89,7 @@ for url in ha:
 
 ea = ["https://opentdb.com/api.php?amount=15&category=28&difficulty=easy&type=multiple"]
 for url in ea:
-    time.sleep(2)
+    time.sleep(1)
 
     req = requests.get(url)
     if req.status_code == 200:
@@ -97,7 +97,7 @@ for url in ea:
         data = res.get("results")
         # creating or get a quiz
         for res in data:
-            time.sleep(5)
+            time.sleep(2)
             level, created = Level.objects.get_or_create(name='Beginner')
             level.time_limit = 15
             level.save()
