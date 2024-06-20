@@ -2,6 +2,7 @@ let currentQuestionIndex = 0;
 let questions = [];
 let userAnswers = {};
 let quizSubmitted = false;
+const url = `https://interactquiz.onrender.com/`
 
 document.addEventListener("DOMContentLoaded", function () {
     const categoryList = document.getElementById('category-list');
@@ -61,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
             startQuizButton.disabled = true;
             disableRadioButtons(radioButtons);
 
-            fetch(`http://127.0.0.1:8000/main/quiz/${selectedCategory.value}/`, {
+            fetch(`${url}main/quiz/${selectedCategory.value}/`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${localStorage.getItem('token')}`,
@@ -239,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const finalAnswers = collectUserAnswers();
         const csrftoken = getCsrfToken();
         const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
-        fetch('http://127.0.0.1:8000/main/submit_quiz/', {
+        fetch(`${url}main/submit_quiz/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -257,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             console.log('finalAnswers: ', finalAnswers);
             console.log('Success:', data);
-            fetch(`http://127.0.0.1:8000/main/results/${selectedCategory.value}`, {
+            fetch(`${url}main/results/${selectedCategory.value}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

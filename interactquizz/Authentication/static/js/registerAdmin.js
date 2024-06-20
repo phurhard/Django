@@ -1,3 +1,4 @@
+const url = `https://interactquiz.onrender.com/`
 document.addEventListener("DOMContentLoaded", function() {
     
     document.getElementById('registerform').addEventListener('submit', function(e) {
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
             formobject[key] = value;
         }
 
-        fetch("http://127.0.0.1:8000/auth/create_admin/", {
+        fetch(`${url}auth/create_admin/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
