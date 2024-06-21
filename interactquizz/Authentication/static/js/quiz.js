@@ -2,7 +2,10 @@ let currentQuestionIndex = 0;
 let questions = [];
 let userAnswers = {};
 let quizSubmitted = false;
+let checkResultsInterval;
 const url = `https://interactquiz.onrender.com/`
+// const url = `http://127.0.0.1:8000/`
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const categoryList = document.getElementById('category-list');
@@ -142,6 +145,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 submitQuiz();
             }
         }, 1000);
+
+        // setTimeout(submitQuiz, time * 1000);
     }
 
     function displayQuestion(index) {
@@ -190,15 +195,35 @@ document.addEventListener("DOMContentLoaded", function () {
         
     };
     // submit the quizzes
-    function submitQuiz() {
+    // function submitQuiz() {
+    //     clearInterval(timerInterval);
+    //     saveSelection();
+    //     // console.log('user answers: ', userAnswers);
+    //     const Okiki = collateResults();
+    //     checkResultsInterval = setInterval(() => {
+    //         if (Okiki) {
+    //             clearInterval(checkResultsInterval);
+    //             console.log('modal should show now');
+    //             showModal();
+    //         }
+    //         console.log('Not here');
+    //         console.log(Okiki);
+    //     }, 5000);
+    // }
+
+    async function submitQuiz() {
         clearInterval(timerInterval);
         saveSelection();
-        // console.log('user answers: ', userAnswers);
-        collateResults();
-        showModal();
-    }
 
+        const resultsProcessed = await collateResults();
+        if (resultsProcessed) {
+            showModal();
+        } else {
+            console.error('Results processing failed');
+        }
+    }
     submitQuizButton.addEventListener('click', function () {
+        // alert("You have submitted your quiz, please wait a little bit for your results");
         submitQuiz();
 
     });
@@ -236,51 +261,95 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // collate the results
-    function collateResults() {
+    // function collateResults() {
+    //     const finalAnswers = collectUserAnswers();
+    //     const csrftoken = getCsrfToken();
+    //     const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
+    //     fetch(`${url}main/submit_quiz/`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'X-CSRFToken': csrftoken,
+    //             'Authorization': `Bearer ${localStorage.getItem('token')}`
+    //         },
+    //         body: JSON.stringify(finalAnswers)
+    //     })
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok ' + response.statusText);
+    //         }
+    //         return response.json();
+    //     })
+    //     .then(data => {
+    //         console.log('finalAnswers: ', finalAnswers);
+    //         console.log('Success:', data);
+    //         fetch(`${url}main/results/${selectedCategory.value}`, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${localStorage.getItem('token')}`
+    //         }
+    //         })
+    //         .then(response => {
+    //             if (!response.ok) {
+    //                 throw new Error('Network response was not ok ' +    response.statusText);
+    //             }
+    //             return response.json();
+    //         })
+    //         .then(data => {
+    //             console.log('Success:', data);
+    //             return true;
+    //         })
+    //         .catch(error => {
+    //             console.error('Error: ', error);
+    //         });
+    //     })
+    //     .catch(error => {
+    //         console.error('Error: ', error);
+    //     });
+
+    // }
+
+    async function collateResults() {
         const finalAnswers = collectUserAnswers();
         const csrftoken = getCsrfToken();
         const selectedCategory = document.querySelector('input[name="quiz_type"]:checked');
-        fetch(`${url}main/submit_quiz/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(finalAnswers)
-        })
-        .then(response => {
+
+        try {
+            const response = await fetch(`${url}main/submit_quiz/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+
+                    'X-CSRFToken': csrftoken,
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(finalAnswers)
+            });
+
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log('finalAnswers: ', finalAnswers);
-            console.log('Success:', data);
-            fetch(`${url}main/results/${selectedCategory.value}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' +    response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch(error => {
-                console.error('Error: ', error);
-            });
-        })
-        .catch(error => {
-            console.error('Error: ', error);
-        });
 
+            const resultsResponse = await fetch(`${url}main/results/${selectedCategory.value}`, {
+                method: 'GET',
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            if (!resultsResponse.ok) {
+                throw new Error('Network reponse was not ok ' + resultsResponse.statusText);
+            }
+
+            const resultsData = await resultsResponse.json();
+            console.log('success: ', resultsData);
+            return true;
+        } catch (error) {
+            console.error('Error: ', error);
+            return false;
+        }
     }
+
 });

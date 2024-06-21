@@ -109,7 +109,7 @@ WSGI_APPLICATION = 'interactquizz.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'defaulter': {
+    'defaullt': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
