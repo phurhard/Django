@@ -192,7 +192,7 @@ def submit_quiz(request):
                 question_answered = Question.objects.get(pk=key)
                 # print(f'question answered {question}, option choosen {option}')
                 if question == question_answered:
-                    answers = Answer.objects.create(
+                    Answer.objects.create(
                         user=user,
                         question=question,
                         option=option
@@ -210,7 +210,6 @@ def submit_quiz(request):
         except Exception as e:
             print(f'Error: {e}')
             return JsonResponse({'error': str(e)}, status=500)
-
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
