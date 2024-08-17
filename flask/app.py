@@ -1,6 +1,12 @@
 from flask import Flask, jsonify, request
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
+
+PORT = os.getenv('PORT', 5000)
 
 @app.route('/register', methods=["POST"])
 def register_user():
@@ -24,4 +30,4 @@ def status():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=PORT)
