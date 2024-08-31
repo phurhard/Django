@@ -55,14 +55,14 @@ document.addEventListener("DOMContentLoaded", function(){
                 display.innerText = "";
                 display.classList.add('custom');
                 const setup = document.createElement('p');
-                // const divider = document.createElement('br');
+                const divider = document.createElement('hr');
                 const delivery = document.createElement('p');
                 setup.innerText = data.data.setup;
                 delivery.innerText = data.data.delivery;
                 delivery.style.justifyItems = 'end';
 
                 display.appendChild(setup);
-                // display.appendChild(divider);
+                display.appendChild(divider);
                 display.appendChild(delivery);
                 // console.log(data.data.delivery);
                 // console.log(data.data.setup);
