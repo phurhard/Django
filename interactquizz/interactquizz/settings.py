@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'main.apps.MainConfig',
-    'Authentication.apps.AuthenticationConfig',
+    # 'Authentication.apps.AuthenticationConfig',
+    'Authentication',
+    'django_extensions',
     'drf_spectacular',
     'drf_spectacular_sidecar',
 ]
@@ -237,3 +239,5 @@ if DEBUG:
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+APPEND_SLASH = False

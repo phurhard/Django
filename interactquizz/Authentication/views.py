@@ -32,25 +32,35 @@ class UserSignup(APIView):
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
-        level = Level.objects.get(name='Beginner')
-        if serializer.is_valid():
-            validated_data = serializer.validated_data
-            User.objects.create_user(
-                email=validated_data['email'],
-                password=validated_data['password'],
-                first_name=validated_data['first_name'],
-                last_name=validated_data['last_name'],
-                age=validated_data.get('age'),
-                level=level
-            )
+        # level = Level.objects.get(name='Beginner')
+        try:
+            if serializer.is_valid():
+                validated_data = serializer.validated_data
+                user = User.objects.create_user(
+                    email=validated_data['email'],
+                    password=validated_data['password'],
+                    first_name=validated_data['first_name'],
+                    last_name=validated_data.get('last_name'),
+                    age=validated_data.get('age'),
+                    # level=level
+                )
+                serializer = UserSerializer(user)
+                return Response({
+                    'success': True,
+                    'message': 'User created successfully',
+                    'data': serializer.data,
+                }, status=status.HTTP_201_CREATED)
             return Response({
-                'success': True,
-                'message': 'User created successfully',
-                'data': serializer.data,
-            }, status=status.HTTP_201_CREATED)
-        return Response({
-            'data': serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
+                'success': False,
+                'message': 'Invalid credentials',
+                'data': serializer.errors
+                }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'message': str(e),
+                'data': serializer.errors
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request):
         return render(request, 'Authentication/register.html')
@@ -76,7 +86,10 @@ class AdminSignup(APIView):
                 'message': 'Superuser created successfully',
                 'data': serializer.data,
             }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            'success': False,
+            'data': serializer.errors
+            }, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
         return render(request, 'Authentication/registerAdmin.html')
@@ -88,44 +101,50 @@ class UserLogin(APIView):
 
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
-        if serializer.is_valid():
-            validated_data = serializer.validated_data
+        try:
+            if serializer.is_valid():
+                validated_data = serializer. validated_data
 
-            email = validated_data.get('email')
-            password = validated_data.get('password')
-
-            # user = User.objects.filter(email=email).first()
-            user = authenticate(request, email=email, password=password)
-            if user is None:
+                email = validated_data.get('email')
+                password = validated_data.get('password')
+                user = authenticate(request, email=email, password=password)
+                if user is None:
+                    return Response({
+                        'success': False,
+                        'message': 'Email is incorrect'
+                        },
+                        status=status.HTTP_401_UNAUTHORIZED
+                        )
+                if not user.check_password(password):
+                    return Response({
+                        'success': False,
+                        'message': 'Invalid password provided'
+                        },
+                        status=status.HTTP_401_UNAUTHORIZED
+                        )
+                login(request, user)
+                refresh = RefreshToken.for_user(user)
+                serializer = UserSerializer(user)
+                return Response({
+                    'success': True,
+                    'message': 'Logged in Successfully',
+                    'data': serializer.data,
+                    'refresh': str(refresh),
+                    'access': str(refresh.  access_token),
+                }, status=status.HTTP_200_OK)
+            else:
                 return Response({
                     'success': False,
-                    'message': 'No user found with that username'
-                    },
-                    status=status.HTTP_404_NOT_FOUND
-                    )
-            if not user.check_password(password):
-                return Response({
+                    'message': 'Logging in unsuccessful',
+                    'errors': serializer.errors,
+                }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({
                     'success': False,
-                    'message': 'Invalid password provided'
-                    },
-                    status=status.HTTP_401_UNAUTHORIZED
-                    )
-            login(request, user)
-            refresh = RefreshToken.for_user(user)
-            serializer = UserSerializer(user)
-            return Response({
-                'success': True,
-                'message': 'Logged in Successfully',
-                'data': serializer.data,
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }, status=status.HTTP_200_OK)
-        else:
-            return Response({
-                'success': False,
-                'message': 'Logged in unsuccessful',
-                'errors': serializer.errors,
-            }, status=status.HTTP_400_BAD_REQUEST)
+                    'message': 'Logging in unsuccessful',
+                    'Reason': str(e),
+                    'errors': serializer.errors,
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request):
         return render(request, 'Authentication/login.html')
@@ -139,7 +158,11 @@ class RefreshTokenView(TokenViewBase):
         serializer.is_valid(raise_exception=True)
         refresh_token = serializer.validated_data.get('refresh')
         access_token = RefreshToken(refresh_token).access_token
-        return Response({'access': str(access_token)})
+        return Response({
+                    'success': True,
+                    'message': 'Access token refreshed',
+                    'data': str(access_token),
+                }, status=status.HTTP_200_OK)
 
 
 def landing_page(request):

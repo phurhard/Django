@@ -6,6 +6,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="icon" href="{% static 'img/brain.svg' %}" sizes="16x16" type="image/svg">
     <title>Login</title>
     <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -17,6 +19,29 @@
 </head>
 
 <body class="custom-bg">
+    {% comment %} toast for error messages {% endcomment %}
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 11;">
+        <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <!-- Error message will be inserted here -->
+            </div>
+        </div>
+    </div>
+    <div class="toast-container position-fixed top-0 right-0 p-3" style="z-index: 11;">
+        <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Error</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <!-- Error message will be inserted here -->
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
             <div class="col-md-6">
@@ -29,7 +54,8 @@
             </div>
             <div class="col-md-6">
                 <h2 class="text-center mb-4">Login</h2>
-                <form id="loginform", method="post">
+                <form id="loginform" method="post">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
@@ -39,16 +65,23 @@
                         <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
                     </div>
                     <p class="form-text">Don't have an account? <a href="{% url 'signup' %}">Register</a></p>
-                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <span class="button-text">Login</span>
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
     <!-- Include Bootstrap JS (Optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         // Pass the URL of the login view to JavaScript
+        const loginUrl = "{% url 'login' %}";
         const profileUrl = "{% url 'profile' %}";
     </script>
     <script src="{% static 'js/signin.js' %}"></script>

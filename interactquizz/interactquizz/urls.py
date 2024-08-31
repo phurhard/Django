@@ -30,9 +30,9 @@ from drf_spectacular.views import (
 urlpatterns = [
     path('secret/', admin.site.urls),
     path('', landing_page, name='landing_page'),
+    path('main/', include(mainurls)),
+    path('auth/', include(urls)),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    path('main/', include(mainurls)),
-    path('auth/', include(urls)),
 ]   + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

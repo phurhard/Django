@@ -14,7 +14,7 @@ class TokenRefreshSerializer(serializers.Serializer):
             token.verify()
         except Exception as e:
             # print(e) log this
-            raise serializers.ValidationError('Invalid refresh token')
+            raise serializers.ValidationError(f'Invalid refresh token {str(e)}')
 
         return attrs
 

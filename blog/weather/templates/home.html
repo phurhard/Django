@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>weather</title>
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>Weather Detector</h1>
+    </div>
+    <div class="row">
+        <div class="leftcolumn">
+          <form method="post" action="">
+            {% csrf_token %}
+            <div>
+              <label for="weather">input your country</label>
+              <input type="text" name="city" placeholder="search for a city" />
+            </div>
+            <div>
+              <button class="btn" type="submit">search</button>
+            </div>
+          </form>
+        </div>
+        {% if city %}
+        <div>
+          <p>City Name: {{ city }}</p>
+          <p>Country Code: {{ city }}</p>
+          <p>Temperature: {{ city }}</p>
+          <p>Humidity: {{ city }}</p>
+          <p>User IP: {{ city }}</p>
+          <p>User's Location: {{ city }}</p>
+        </div>
+        {% endif %}
+        <div>
+
+        </div>
+    </div>
+  </body>
+</html>
