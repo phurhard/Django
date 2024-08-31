@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function(){
     // first we get the values of the categories
 
 
-    const  url = `/server/`;
+    const  url = ``;
     const generate = document.getElementById('generate');
     generate.addEventListener('click', function() {
         // Get the category
@@ -45,21 +45,24 @@ document.addEventListener("DOMContentLoaded", function(){
         .then(res => res.json())
         .then(data => {
             // console.log(data);
-            if (data.error) {
+            if (!data.success) {
             const message = data.message
             // console.log(message);
             } else {
-                const display = document.getElementsByClassName('display')[0];
+                const display = document.querySelector('.display');
                 spiner.style.display = 'none';
                 if (data.data.type === 'twopart') {
                 display.innerText = "";
+                display.classList.add('custom');
                 const setup = document.createElement('p');
+                // const divider = document.createElement('br');
                 const delivery = document.createElement('p');
                 setup.innerText = data.data.setup;
                 delivery.innerText = data.data.delivery;
                 delivery.style.justifyItems = 'end';
 
                 display.appendChild(setup);
+                // display.appendChild(divider);
                 display.appendChild(delivery);
                 // console.log(data.data.delivery);
                 // console.log(data.data.setup);
@@ -67,6 +70,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 } else {
                 // create a p tag to store the joke inside the display div
                 display.innerText = "";
+                display.classList.add('custom');
                 const paragraph = document.createElement('p');
                 paragraph.innerText = data.data.joke;
                 display.appendChild(paragraph);
