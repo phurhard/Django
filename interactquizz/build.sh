@@ -28,3 +28,5 @@ EOF
 
 # Seed the database with initial data
 echo "Build script completed successfully."
+
+pip install -r requirements.txt
