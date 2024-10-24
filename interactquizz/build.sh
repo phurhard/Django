@@ -2,6 +2,7 @@
 
 # Exit immediately if a command exits with a non-zero status
 set -e
+pip install -r requirements.txt
 
 # Apply database migrations
 echo "Applying database migrations..."
@@ -28,5 +29,3 @@ EOF
 
 # Seed the database with initial data
 echo "Build script completed successfully."
-
-pip install -r requirements.txt
