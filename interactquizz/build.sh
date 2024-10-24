@@ -6,6 +6,7 @@ pip install -r requirements.txt
 
 # Apply database migrations
 echo "Applying database migrations..."
+python manage.py makemigrations
 python manage.py migrate
 
 # Create superuser if it does not exist
