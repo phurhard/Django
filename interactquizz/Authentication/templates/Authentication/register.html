@@ -40,26 +40,38 @@
             </div>
             <div class="col-md-6">
                 <h2 class="text-center mb-4">Register</h2>
-                <form id="registerform", method="post">
+                <form id="registerform" method="post" novalidate>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email" id="email" required placeholder="Enter your email">
+                        <input type="email" class="form-control" name="email" id="email" required placeholder="Enter your email" aria-describedby="emailHelp">
+                        <div class="invalid-feedback">
+                            Please provide a valid email.
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="firstname">First Name</label>
-                        <input type="text" class="form-control" name="first_name" required id="firstname" placeholder="Enter your firstname">
+                        <input type="text" class="form-control" name="first_name" id="firstname" required placeholder="Enter your first name" aria-describedby="firstNameHelp">
+                        <div class="invalid-feedback">
+                            Please provide your first name.
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="lastname">Last Name</label>
-                        <input type="text" class="form-control" name="last_name" id="lastname" placeholder="Enter your lastname">
+                        <input type="text" class="form-control" name="last_name" id="lastname" required placeholder="Enter your last name" aria-describedby="lastNameHelp">
+                        <div class="invalid-feedback">
+                            Please provide your last name.
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" class="form-control" name="password" id="password" required placeholder="Enter your password">
+                        <input type="password" class="form-control" name="password" id="password" required placeholder="Enter your password" aria-describedby="passwordHelp">
+                        <div class="invalid-feedback">
+                            Please provide a password.
+                        </div>
                     </div>
 
                     <p class="form-text">Already have an account? <a href="{% url 'login' %}">Login</a></p>
-                    <button type="submit" id="submit" class="btn btn-primary btn-block">
+                    <button type="submit" id="submit" class="btn btn-primary btn-block" aria-label="Register">
                         <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
                         <span class="button-text">Register</span>
                     </button>
