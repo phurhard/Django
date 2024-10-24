@@ -27,6 +27,16 @@ from main.serializers import (
 
 
 def create_user(serializer, is_superuser=False):
+    """
+    Create a user or superuser based on the serializer data.
+
+    Args:
+        serializer (UserSerializer): The serializer containing user data.
+        is_superuser (bool): Flag to determine if the user is a superuser.
+
+    Returns:
+        tuple: A tuple containing the user object and any errors encountered.
+    """
     if serializer.is_valid():
         validated_data = serializer.validated_data
         if is_superuser:
@@ -49,7 +59,9 @@ def create_user(serializer, is_superuser=False):
     return None, serializer.errors
 
 class UserSignup(APIView):
-    serializer_class = UserSerializer
+    """
+    API view for user signup.
+    """
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -72,7 +84,9 @@ class UserSignup(APIView):
 
 
 class AdminSignup(APIView):
-    serializer_class = UserSerializer
+    """
+    API view for admin signup.
+    """
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -94,7 +108,9 @@ class AdminSignup(APIView):
 
 
 class UserLogin(APIView):
-    serializer_class = UserLoginSerializer
+    """
+    API view for user login.
+    """
     permission_classes = [AllowAny]
 
     def post(self, request):
@@ -149,7 +165,9 @@ class UserLogin(APIView):
 
 
 class RefreshTokenView(TokenViewBase):
-    serializer_class = TokenRefreshSerializer
+    """
+    API view for refreshing JWT tokens.
+    """
 
     def post(self, request, *args, **kwargs):
         serializer = TokenRefreshSerializer(data=request.data)
@@ -164,13 +182,19 @@ class RefreshTokenView(TokenViewBase):
 
 
 def landing_page(request):
+    """
+    Render the landing page.
+    """
     return render(request, 'Authentication/landing_page.html')
 
 
 @login_required
 def profile_view(request):
-    '''
-    This renders the profile page'''
+    """
+    Render the profile page for the logged-in user.
+
+    Handles profile image upload and displays user scores.
+    """
     user = request.user
     scores = Score.objects.filter(user=user)
     serializer = ScoreSerializer(scores, many=True)
@@ -195,8 +219,11 @@ def profile_view(request):
 
 @login_required
 def home_view(request):
-    '''
-    This renders the home page'''
+    """
+    Render the home page with top users and leaderboard.
+
+    Displays top users and leaderboard based on total scores.
+    """
     users = User.objects.annotate(total_score=Coalesce(Sum('score__score'), 0))
     top_users = users.order_by('-total_score')[:3]
     top_users_serializer = ProfileSerializer(top_users, many=True)
@@ -211,9 +238,11 @@ def home_view(request):
 
 @login_required
 def quiz_view(request):
-    '''
-    This renders the quiz page
-    gets all the quiz objs'''
+    """
+    Render the quiz page for the logged-in user.
+
+    Displays available quizzes based on the user's level.
+    """
     user = request.user
     user_scores = Score.objects.filter(user=user)
     user_level = user.level
@@ -234,6 +263,8 @@ def quiz_view(request):
 
 @login_required
 def logout_view(request):
-    '''Logs out the user'''
+    """
+    Log out the current user and redirect to the login page.
+    """
     logout(request)
     return redirect('login')
