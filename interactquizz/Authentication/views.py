@@ -26,41 +26,46 @@ from main.serializers import (
 # Create your views here.
 
 
+def create_user(serializer, is_superuser=False):
+    if serializer.is_valid():
+        validated_data = serializer.validated_data
+        if is_superuser:
+            user = User.objects.create_superuser(
+                email=validated_data['email'],
+                password=validated_data['password'],
+                first_name=validated_data['first_name'],
+                last_name=validated_data.get('last_name'),
+                age=validated_data.get('age')
+            )
+        else:
+            user = User.objects.create_user(
+                email=validated_data['email'],
+                password=validated_data['password'],
+                first_name=validated_data['first_name'],
+                last_name=validated_data.get('last_name'),
+                age=validated_data.get('age')
+            )
+        return user, None
+    return None, serializer.errors
+
 class UserSignup(APIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
-        # level = Level.objects.get(name='Beginner')
-        try:
-            if serializer.is_valid():
-                validated_data = serializer.validated_data
-                user = User.objects.create_user(
-                    email=validated_data['email'],
-                    password=validated_data['password'],
-                    first_name=validated_data['first_name'],
-                    last_name=validated_data.get('last_name'),
-                    age=validated_data.get('age'),
-                    # level=level
-                )
-                serializer = UserSerializer(user)
-                return Response({
-                    'success': True,
-                    'message': 'User created successfully',
-                    'data': serializer.data,
-                }, status=status.HTTP_201_CREATED)
+        user, errors = create_user(serializer)
+        if user:
             return Response({
-                'success': False,
-                'message': 'Invalid credentials',
-                'data': serializer.errors
-                }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
-        except Exception as e:
-            return Response({
-                'success': False,
-                'message': str(e),
-                'data': serializer.errors
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                'success': True,
+                'message': 'User created successfully',
+                'data': UserSerializer(user).data,
+            }, status=status.HTTP_201_CREATED)
+        return Response({
+            'success': False,
+            'message': 'Invalid credentials',
+            'data': errors
+        }, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     def get(self, request):
         return render(request, 'Authentication/register.html')
@@ -72,24 +77,17 @@ class AdminSignup(APIView):
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            validated_data = serializer.validated_data
-            User.objects.create_superuser(
-                email=validated_data['email'],
-                password=validated_data['password'],
-                first_name=validated_data['first_name'],
-                last_name=validated_data['last_name'],
-                age=validated_data.get('age')
-            )
+        user, errors = create_user(serializer, is_superuser=True)
+        if user:
             return Response({
                 'success': True,
                 'message': 'Superuser created successfully',
-                'data': serializer.data,
+                'data': UserSerializer(user).data,
             }, status=status.HTTP_201_CREATED)
         return Response({
             'success': False,
-            'data': serializer.errors
-            }, status=status.HTTP_400_BAD_REQUEST)
+            'data': errors
+        }, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
         return render(request, 'Authentication/registerAdmin.html')
